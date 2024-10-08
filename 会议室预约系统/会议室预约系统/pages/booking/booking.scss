@@ -1,0 +1,71 @@
+/* pages/booking/booking.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+.header {
+  background-color: #f8f8f8;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.return-button {
+  position: absolute;
+  left: 40px;
+  top: 80px;
+  color: #007aff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* 会议室预约区域 */
+.booking-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.picker {
+  font-size: 16px;
+  color: #333;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.tab-bar {
+  display: flex;
+  height: 50px;
+  width: 80%;
+  background-color: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+}
+
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: #007aff;
+  position: relative;
+}
+
+.tab-bar-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 1px;
+  height: 60%;
+  background-color: #e0e0e0;
+}

@@ -1,0 +1,74 @@
+/* 基础样式 */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 表格颜色说明 */
+.color-legend {
+  display: flex;
+  flex-direction: column;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.legend-available {
+  background-color: #ccffcc; /* 浅绿色 */
+}
+.legend-booked {
+  background-color: #ffcccc; /* 浅红色 */
+}
+.legend-success {
+  background-color: #ccccff; /* 浅蓝色 */
+}
+
+/* 表格样式 */
+.table-container {
+  flex: 1;
+}
+
+.table {
+  display: table;
+  width: max-content;
+}
+
+.table-row {
+  display: flex;
+}
+
+.table-header, .table-cell {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+  min-width: 80px;
+  font-size: 13px;
+}
+
+.table-header {
+  font-weight: bold;
+  background-color: #f8f8f8;
+}

@@ -1,0 +1,41 @@
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="header-title">会议室状态</text>
+    <view class="color-legend">
+      <view class="legend-item">
+        <view class="legend-color legend-available"></view>
+        <text>可预约</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color legend-booked"></view>
+        <text>已被预约</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color legend-success"></view>
+        <text>预约成功</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 表格部分 -->
+  <scroll-view class="table-container" scroll-x="true">
+    <view class="table">
+      <!-- 表头 -->
+      <view class="table-row">
+        <view class="table-header">会议室\时间</view>
+        <view class="table-header" wx:for="{{timeSlots}}" wx:key="{{index}}">
+          {{item}}
+        </view>
+      </view>
+
+      <!-- 行数据 -->
+      <view class="table-row" wx:for="{{rooms}}" wx:key="{{index}}">
+        <view class="table-header">{{item.name}}</view>
+        <view class="table-cell" wx:for="{{item.status}}" wx:key="{{index}}" style="background-color:{{item.color}}">
+          {{item.time}}
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
