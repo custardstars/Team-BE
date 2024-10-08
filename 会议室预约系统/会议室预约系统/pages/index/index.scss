@@ -1,0 +1,65 @@
+/**index.scss**/
+page {
+  height:100vh;
+  display: flex;
+  flex-direction: column;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 使内容垂直居中 */
+  align-items: center;
+  height: 55vh; /* 调整高度，减少留白 */
+}
+.scrollarea {
+  flex: 1;
+  overflow-y: hidden;
+}
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #aaa;
+  width: 80%;
+  margin-bottom: 20px;
+}
+.userinfo-avatar {
+  overflow: hidden;
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+.usermotto {
+  margin-top: 50px;
+}
+.avatar-wrapper {
+  padding: 0;
+  width: 56px !important;
+  border-radius: 8px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.avatar {
+  display: block;
+  width: 56px;
+  height: 56px;
+}
+.nickname-wrapper {
+  display: flex;
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  border-top: .5px solid rgba(0, 0, 0, 0.1);
+  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
+  color: black;
+}
+.nickname-label {
+  width: 105px;
+}
+.nickname-input {
+  flex: 1;
+}
+.enter-system-button {
+  margin-top: 80px; /* 确保按钮和其他内容之间的间距合理 */
+}

@@ -1,0 +1,20 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 顶部标题和返回按钮 -->
+  <text class="return-button" bindtap="goBack">返回</text>
+  <view class="header">
+    <text class="header-title">个人主页</text>
+  </view>
+
+  <!-- 中间内容区域 -->
+  <view class="profile-area">
+    <!-- 个人头像展示 -->
+    <!-- <image class="profile-avatar" src="{{avatarUrl}}" mode="cover"></image> -->
+    <!-- 个人签名展示 -->
+    <view class="profile-signature">
+      <text>个人签名：</text>
+      <text>{{signature}}</text>
+    </view>
+  </view>
+
+</view>
