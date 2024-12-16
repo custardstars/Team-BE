@@ -1,10 +1,10 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/home/home",
     "pages/user-center/index",
     "pages/booking/booking",
     "pages/profile/profile",
-    "pages/home/home"
+    "pages/orders/orders"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -22,12 +22,6 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/index/index",
-        "text": "登录",
-        "iconPath": "images/icons/home.png",
-        "selectedIconPath": "images/icons/home-active.png"
-      },
-      {
         "pagePath": "pages/home/home",
         "text": "首页",
         "iconPath": "images/icons/home.png",
@@ -38,6 +32,12 @@
         "text": "会议室预约",
         "iconPath": "images/icons/examples.png",
         "selectedIconPath": "images/icons/examples-active.png"
+      },
+      {
+        "pagePath": "pages/orders/orders",
+        "text": "我的订单",
+        "iconPath": "images/icons/usercenter.png",
+        "selectedIconPath": "images/icons/usercenter-active.png"
       },
       {
         "pagePath": "pages/profile/profile",
