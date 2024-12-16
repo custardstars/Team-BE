@@ -1,2 +1,27 @@
-<!--pages/home/home.wxml-->
-<text>pages/home/home.wxml</text>
+<view class="container">
+  <!-- 顶部日期导航栏 -->
+  <view class="date-nav">
+    <block wx:for="{{weekDates}}" wx:key="index">
+      <view 
+        class="date-item {{selectedDateIndex === index ? 'selected' : ''}}" 
+        bindtap="onDateSelect" 
+        data-index="{{index}}">
+        <text>{{item.date}}</text>
+        <text>{{item.day}}</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 可上下拖动的时间段列表 -->
+  <scroll-view scroll-y class="time-list">
+    <block wx:for="{{timeSlots}}" wx:key="index">
+      <view 
+        class="time-item" 
+        bindtap="onTimeSlotSelect" 
+        data-time="{{item.time}}">
+        <text class="time">{{item.time}}</text>
+        <text class="status">{{item.status}}</text>
+      </view>
+    </block>
+  </scroll-view>
+</view>
