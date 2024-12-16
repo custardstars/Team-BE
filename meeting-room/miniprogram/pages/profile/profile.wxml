@@ -1,5 +1,7 @@
+<!-- profile.wxml -->
 <view class="profile">
   <image src="{{avatar}}" />
-  <text>{{wx_name}}</text>
-  <text>{{signature}}</text>
+  <text>{{username}}</text>
+  <input value="{{signature}}" placeholder="个人签名" bindinput="onSignatureInput" />
+  <button bindtap="onSaveSignature">保存签名</button>
 </view>

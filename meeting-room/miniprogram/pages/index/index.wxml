@@ -2,6 +2,15 @@
 <view class="container">
   <view class="main">
 
+    <view class="login-container">
+    <button open-type="getUserInfo" bindgetuserinfo="onGetUserInfo">微信登录</button>
+    <view wx:if="{{isLoggedIn}}">
+      <image src="{{avatar}}" />
+      <input value="{{username}}" placeholder="请输入用户名" bindinput="onUsernameInput" />
+      <button bindtap="onSubmit">提交</button>
+    </view>
+  </view>
+
     <view class="button" bind:tap="logIn">登录</view>
   </view>
 </view>

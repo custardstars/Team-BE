@@ -44,6 +44,12 @@
         "text": "个人主页",
         "iconPath": "images/icons/usercenter.png",
         "selectedIconPath": "images/icons/usercenter-active.png"
+      },
+      {
+        "pagePath": "pages/user-center/index",
+        "text": "个人主页2",
+        "iconPath": "images/icons/usercenter.png",
+        "selectedIconPath": "images/icons/usercenter-active.png"
       }
     ]
   }
