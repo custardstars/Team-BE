@@ -1,0 +1,1 @@
+"E:\微信web开发者工具\cli.bat" cloud functions deploy --e my-develop-4gt6cgtw1516bdea --n quickstartFunctions --r --project "E:\WechatProject\meeting-room" --report_first --report

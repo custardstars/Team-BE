@@ -1,0 +1,7 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="main">
+
+    <view class="button" bind:tap="logIn">登录</view>
+  </view>
+</view>
