@@ -1,1 +1,103 @@
 /* pages/booking/booking.wxss */
+/* 页面整体布局 */
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  height: 100vh;
+}
+
+/* 顶部日期栏 */
+.date-nav {
+  display: flex;
+  justify-content: space-between;
+  background-color: #e9004f;
+  padding: 0;
+  margin: 0;
+}
+
+.date-item {
+  flex: 1;
+  text-align: center;
+  color: #fff;
+  padding: 8px 0;
+}
+
+.date-item.selected {
+  background-color: #b0003a;
+  font-weight: bold;
+}
+
+/* 时间段选择 */
+.section-title {
+  margin: 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.time-grid {
+  /* border: 10px; */
+  height: 220px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  /* background-color: blueviolet; */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.time-item {
+  width: 30%;
+  text-align: center;
+  margin: 5px 0;
+  padding: 8px 0;
+  border: 1px solid #eb2e6d;
+  border-radius: 8px;
+  color: #f0233e;
+}
+
+.time-item.highlight {
+  background-color: #db4048;
+  color: #fff;
+}
+
+/* 基础预约信息 */
+.form-section {
+  margin-right: 20px;
+  margin-top: 20px;
+  width: 300px;
+  height: 280px;
+  /* margin: 20px 0; */
+  padding: 0 10px;
+  /* background-color: blueviolet; */
+}
+
+.form-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.form-item input {
+  border: none;
+  outline: none;
+  text-align: right;
+  font-size: 14px;
+}
+
+/* 确定按钮 */
+.confirm-btn {
+  width: 80%;
+  margin: 20px auto;
+  background-color: #e9004f;
+  color: #fff;
+  padding: 10px 0;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+}

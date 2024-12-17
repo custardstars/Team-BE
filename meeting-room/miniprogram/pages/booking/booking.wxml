@@ -1,2 +1,63 @@
 <!--pages/booking/booking.wxml-->
-<text>pages/booking/booking.wxml</text>
+<view class="container">
+  <!-- 顶部日期栏 -->
+  <view class="date-nav">
+    <block wx:for="{{weekDates}}" wx:key="index">
+      <view 
+        class="date-item {{selectedDateIndex === index ? 'selected' : ''}}" 
+        bindtap="onDateSelect" 
+        data-index="{{index}}">
+        <text>{{item.day}}</text>
+        <text>{{item.date}}</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 时间段选择 -->
+  <view class="time-section">
+    <view class="time-grid">
+      <block wx:for="{{timeSlots}}" wx:key="index">
+        <view 
+          class="time-item {{item.selected ? 'highlight' : ''}}" 
+          bindtap="onTimeSlotSelect" 
+          data-index="{{index}}">
+          <text>{{item.time}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 基础预约信息填写 -->
+  <view class="form-section">
+    <text class="section-title">基础预约信息</text>
+
+    <!-- 会议室选择 -->
+    <picker mode="selector" range="{{meetingRooms}}" bindchange="onMeetingRoomChange">
+      <view class="form-item">
+        <text>会议室</text>
+        <text>{{selectedMeetingRoom}}</text>
+      </view>
+    </picker>
+
+    <!-- 日期选择 -->
+    <picker mode="date" start="{{today}}" end="{{sevenDaysLater}}" bindchange="onDateChange">
+      <view class="form-item">
+        <text>日期</text>
+        <text>{{selectedDate}}</text>
+      </view>
+    </picker>
+
+    <!-- 自定义时间输入 -->
+    <view class="form-item">
+      <text>开始</text>
+      <input type="time" value="{{startTime}}" bindinput="onStartTimeInput" />
+    </view>
+    <view class="form-item">
+      <text>结束</text>
+      <input type="time" value="{{endTime}}" bindinput="onEndTimeInput" />
+    </view>
+  </view>
+
+  <!-- 确定按钮 -->
+  <button class="confirm-btn" bindtap="onConfirm">确定</button>
+</view>
