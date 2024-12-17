@@ -21,7 +21,7 @@ exports.main = async (event) => {
           user_id,
           slot_id,
           room_id,
-          date : date,
+          date,
           reserve_time: reserveTime
         }
       });
