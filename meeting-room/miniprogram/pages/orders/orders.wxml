@@ -1,2 +1,52 @@
-<!--pages/orders/orders.wxml-->
-<text>pages/orders/orders.wxml</text>
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-title">
+    <text>我的预约记录</text>
+  </view>
+
+  <!-- Tab导航栏 -->
+  <view class="tab-bar">
+    <view class="tab-item" 
+          bindtap="changeTab" 
+          data-index="0" 
+          style="{{currentTab === 0 ? 'color: #fff; background: #f85c5c;' : ''}}">
+      全部
+    </view>
+    <view class="tab-item" 
+          bindtap="changeTab" 
+          data-index="1" 
+          style="{{currentTab === 1 ? 'color: #fff; background: #f85c5c;' : ''}}">
+      进行中
+    </view>
+    <view class="tab-item" 
+          bindtap="changeTab" 
+          data-index="2" 
+          style="{{currentTab === 2 ? 'color: #fff; background: #f85c5c;' : ''}}">
+      已完成
+    </view>
+    <view class="tab-item" 
+          bindtap="changeTab" 
+          data-index="3" 
+          style="{{currentTab === 3 ? 'color: #fff; background: #f85c5c;' : ''}}">
+      订阅
+    </view>
+  </view>
+
+  <!-- 订单记录列表 -->
+  <scroll-view class="order-list" scroll-y="true">
+    <block wx:for="{{orderList}}" wx:key="record_id">
+      <view class="order-card">
+        <view class="order-header">
+          <text class="room-name">{{item.room_name}}</text>
+          <text class="order-status">{{item.status}}</text>
+        </view>
+        <view class="order-details">
+          <text>预约人：{{item.username}}</text>
+          <text>预约日期：{{item.date}}</text>
+          <text>预约时间段：{{item.period}}</text>
+          <text>提交时间：{{item.create_time}}</text>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+</view>

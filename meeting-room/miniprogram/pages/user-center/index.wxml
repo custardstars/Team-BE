@@ -3,13 +3,16 @@
   <view class="top_bg" />
   <view class="main_content">
     <view class="userinfo_container">
-      <image class="avatar" src="../../images/icons/avatar.png" bind:tap="getOpenId" mode="widthFix" />
+      <image class="avatar" src="../../images/icons/avatar.png" bind:tap="onLogin" mode="widthFix" />
+      
       <block wx:if="{{ !openId }}">
-        <view class="username" bind:tap="getOpenId">请点击登录</view>
+        <view class="username" bind:tap="onLogin">请点击登录</view>
       </block>
       <block wx:else>
         <view class="username">openId: {{ openId }}</view>
+        <view class="username" bind:tap="onLogout">退出登录</view>
       </block>
+
     </view>
     <view class="settings_container">
       <view class="setting_item">
@@ -29,7 +32,6 @@
       <view class="setting_item">
         <view class="left">
           <image class="setting_icon" src="../../images/icons/customer-service.svg" />
-          <!-- <view class="setting_text">联系客服</view> -->
           <button open-type="contact" class="contact-button">
             联系客服
           </button>

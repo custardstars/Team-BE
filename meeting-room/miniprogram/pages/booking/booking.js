@@ -109,14 +109,52 @@ Page({
 
   // 确定按钮事件
   onConfirm() {
+    const user = wx.getStorageSync('userInfo');
+    if (!user) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            // 跳转到个人主页
+            wx.switchTab({
+              url: '/pages/user-center/index'
+            });
+          }
+        }
+      });
+      return;
+    }
     const selectedSlots = this.data.timeSlots
       .filter((slot) => slot.selected)
       .map((slot) => slot.time);
-
     wx.showModal({
       title: '预约确认',
       content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
-      showCancel: false,
+      showCancel: true,
+    })
+    
+    wx.cloud.callFunction({
+      name: 'add_reservation',
+      data: {
+        user_id: this.data.userInfo.user_id,
+        selectedSlots: this.data.selectedSlots
+      },
+      success: res => {
+        wx.showToast({
+          title: '预约成功',
+          icon: 'success'
+        });
+      },
+      fail: err => {
+        console.error('预约失败', err);
+        wx.showToast({
+          title: '预约失败',
+          icon: 'error'
+        });
+      }
     });
   },
 });
