@@ -19,7 +19,7 @@
       <block wx:for="{{timeSlots}}" wx:key="index">
         <view 
           class="time-item {{item.selected ? 'highlight' : ''}}" 
-          bindtap="onTimeSlotSelect" 
+          bindtap="onTimeSlotSelect"
           data-index="{{index}}">
           <text>{{item.time}}</text>
         </view>

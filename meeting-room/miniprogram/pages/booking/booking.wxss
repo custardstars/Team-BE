@@ -101,3 +101,8 @@
   text-align: center;
   font-size: 16px;
 }
+/* 无法选择的会议室 */
+.time-item[disabled] {
+  pointer-events: none; /* 禁止点击 */
+  opacity: 0.6;         /* 半透明 */
+}
