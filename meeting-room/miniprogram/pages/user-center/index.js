@@ -3,19 +3,20 @@ const { envList } = require('../../envList');
 // pages/me/index.js
 Page({
   data: {
-    userInfo: null,
-    openId: '',
-    showTip: false,
+    username: '',
+    avatar: '',
+    open_id: '',
     title:"",
-    content:""
   },
   onLoad() {
     // 检查本地存储
     const user = wx.getStorageSync('userInfo');
-    if (user) {
+    const openid = wx.getStorageSync('open_id');
+    if (openid) {
       this.setData({
-        isLoggedIn: true,
-        userInfo: user
+        username: user.nickName,
+        avatar: user.avatar,
+        open_id: openid
       });
     }
   },
@@ -29,24 +30,21 @@ Page({
           name: 'get_openid',
         })
         .then((resp) => {
-          this.setData({
-            openId: resp.result.openid,
-          });
+          this.setData({open_id: resp.result.openid});
           wx.hideLoading();
         });
         wx.cloud.callFunction({
           name: 'add_user',
           data: {
-            // user_id: openId,
-            user_id: 'aaa',
+            user_id: this.data.open_id,
             username: userInfo.nickName,
             avatar: userInfo.avatarUrl
           },
           success: () => {
-            wx.setStorageSync('userInfo', { user_id: 'aaa', username: userInfo.nickName, avatar: userInfo.avatarUrl });
+            wx.setStorageSync('userInfo', { user_id: this.data.open_id, username: userInfo.nickName, avatar: userInfo.avatarUrl });
+            wx.setStorageSync('open_id', this.data.open_id);
             this.setData({
-              isLoggedIn: true,
-              userInfo: { user_id: 'aaa', username: userInfo.nickName, avatar: userInfo.avatarUrl }
+              userInfo: { user_id: this.data.open_id, username: userInfo.nickName, avatar: userInfo.avatarUrl }
             });
             wx.showToast({ title: '登录成功' });
           },
@@ -65,10 +63,11 @@ Page({
   },
   onLogout() {
     wx.removeStorageSync('userInfo');
+    wx.removeStorage('open_id');
     this.setData({
-      isLoggedIn: false,
-      userInfo: null,
-      openId: ''
+      username: '',
+      avatar: '',
+      open_id: ''
     });
     wx.showToast({ title: '已退出登录' });
   }

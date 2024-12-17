@@ -1,6 +1,5 @@
 Page({
   data: {
-    userInfo : "",
     weekDates: [], // 存放周一到周日
     selectedDateIndex: 0, // 当前选中日期的索引
 
@@ -107,11 +106,10 @@ Page({
   onEndTimeInput(e) {
     this.setData({ endTime: e.detail.value });
   },
-
   // 确定按钮事件
   onConfirm() {
-    const user = wx.getStorageSync('userInfo');
-    if (!user) {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id) {
       wx.showModal({
         title: '提示',
         content: '请先登录',
@@ -119,10 +117,7 @@ Page({
         confirmText: '去登录',
         success: (res) => {
           if (res.confirm) {
-            // 跳转到个人主页
-            wx.switchTab({
-              url: '/pages/user-center/index'
-            });
+            wx.switchTab({url: '/pages/user-center/index'});
           }
         }
       });
@@ -140,12 +135,13 @@ Page({
     wx.cloud.callFunction({
       name: 'add_reservation',
       data: {
-        user_id: user.user_id,
-        selectedSlots: this.data.selectedSlots
+        user_id: open_id,
+        selectedSlots: [100,200,300]
+        // selectedSlots: this.data.selectedSlots
       },
       success: res => {
         wx.showToast({
-          title: '预约成功',
+          title: '成功？',
           icon: 'success'
         });
       },
