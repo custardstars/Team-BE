@@ -8,7 +8,7 @@ Page({
   },
 
   onLoad() {
-    this.fetchOrders(); // 页面加载时默认获取全部记录
+    // this.fetchOrders(); // 页面加载时默认获取全部记录
   },
 
   // 切换 Tab
@@ -23,7 +23,6 @@ Page({
   fetchOrders() {
     wx.showLoading({ title: '加载中...' });
     const { currentTab } = this.data;
-
     // 根据当前 Tab 筛选状态
     let statusCondition = {};
     switch (currentTab) {
@@ -39,7 +38,6 @@ Page({
       default:
         statusCondition = {}; // 全部
     }
-
     // 查询 records 表，关联 users、rooms、time_slots 表
     db.collection('records')
       .where(statusCondition)

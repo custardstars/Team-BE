@@ -43,7 +43,7 @@ Page({
             avatar: userInfo.avatarUrl
           },
           success: () => {
-            wx.setStorageSync('userInfo', { user_id: 'aa', username: userInfo.nickName, avatar: userInfo.avatarUrl });
+            wx.setStorageSync('userInfo', { user_id: 'aaa', username: userInfo.nickName, avatar: userInfo.avatarUrl });
             this.setData({
               isLoggedIn: true,
               userInfo: { user_id: 'aaa', username: userInfo.nickName, avatar: userInfo.avatarUrl }

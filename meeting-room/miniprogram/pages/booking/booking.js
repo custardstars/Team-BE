@@ -1,5 +1,6 @@
 Page({
   data: {
+    userInfo : "",
     weekDates: [], // 存放周一到周日
     selectedDateIndex: 0, // 当前选中日期的索引
 
@@ -139,7 +140,7 @@ Page({
     wx.cloud.callFunction({
       name: 'add_reservation',
       data: {
-        user_id: this.data.userInfo.user_id,
+        user_id: user.user_id,
         selectedSlots: this.data.selectedSlots
       },
       success: res => {
