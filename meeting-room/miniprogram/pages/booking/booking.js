@@ -4,21 +4,43 @@ Page({
     selectedDateIndex: 0, // 当前选中日期的索引
 
     timeSlots: [], // 时间段数据
-    meetingRooms: ['1号会议室', '2号会议室', '3号会议室'], // 会议室列表
-    selectedMeetingRoom: '1号会议室',
+    meetingRooms:null, // 会议室列表
+    selectedMeetingRoom:'',
 
     selectedDate: '', // 选择的日期
-    startTime: '08:00',
-    endTime: '09:00',
 
     today: '', // 今天日期
     sevenDaysLater: '', // 7天后的日期
+
+    number: 2,
+    numberOptions: [2,3,4,5,6],
+    topic: '',
+    phone: '',
   },
   onLoad() {
     this.initWeekDates();
     this.initTimeSlots();
+    this.initRooms();
     this.setTodayAndSevenDaysLater();
     // this.fetchReservations(); // 加载时查询当前日期的预约情况
+  },
+  initRooms() {
+    wx.cloud.callFunction({
+      name: 'get_rooms', // 调用云函数
+      success: res => {
+        if (res.result.code === 200) {
+          this.setData({
+            meetingRooms: res.result.data,
+            selectedMeetingRoom: res.result.data[0] || '', // 默认选中第一个会议室
+          });
+        } else {
+          console.error('会议室列表获取失败', res.result.message);
+        }
+      },
+      fail: err => {
+        console.error('云函数调用失败', err);
+      }
+    });
   },
 
   fetchReservations() {
@@ -121,19 +143,19 @@ Page({
       selectedMeetingRoom: this.data.meetingRooms[e.detail.value],
     });
   },
-  // 选择日期
-  onDateChange(e) {
-    this.setData({
-      selectedDate: e.detail.value,
+  // 会议人数
+  onNumberChange(e){
+    this.setData({ 
+      number: this.data.numberOptions[e.detail.value],
     });
   },
-  // 自定义开始时间
-  onStartTimeInput(e) {
-    this.setData({ startTime: e.detail.value });
-  },
-  // 自定义结束时间
+  // 会议主题
   onEndTimeInput(e) {
-    this.setData({ endTime: e.detail.value });
+    this.setData({ topic: e.detail.value });
+  },
+  // 联系方式
+  onPhoneInput(e) {
+    this.setData({ phone: e.detail.value });
   },
   
   // 确定按钮事件
