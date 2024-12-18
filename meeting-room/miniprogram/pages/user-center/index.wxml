@@ -15,6 +15,15 @@
 
     </view>
     <view class="settings_container">
+
+      <view class="setting_item" bindtap="gotoOrders">
+        <view class="left">
+          <image class="setting_icon" src="../../images/icons/setting.svg" />
+          <view class="setting_text">我的订单</view>
+        </view>
+        <image class="arrow_icon" src="../../images/arrow.svg" />
+      </view>
+
       <view class="setting_item">
         <view class="left">
           <image class="setting_icon" src="../../images/icons/setting.svg" />

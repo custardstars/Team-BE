@@ -20,6 +20,13 @@ Page({
       });
     }
   },
+
+  gotoOrders() {
+    wx.navigateTo({
+      url: '/pages/orders/orders',
+    });
+  },
+
   // 登录
   onLogin() {
     wx.getUserProfile({

@@ -7,15 +7,12 @@ Page({
     selectedTab: 'all',     // 当前选中的订单标签
     currentOrders: [],      // 当前显示的订单列表
   },
-
   onLoad() {
     this.fetchOrders();  // 加载数据时调用
   },
-
   onShow() {
     this.fetchOrders();  // 每次页面显示时都刷新数据
   },
-
   // 时间格式化函数（将时间戳格式化为你希望的格式）
   formatReserveTime(date) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
@@ -25,14 +22,12 @@ Page({
   // 合并连续时间段的函数
   mergeConsecutiveOrders(orders) {
     const mergedOrders = [];
-    
     // 按照房间和日期排序，确保合并顺序
     orders.sort((a, b) => a.room_id.localeCompare(b.room_id) || a.date.localeCompare(b.date) || a.slot_id.localeCompare(b.slot_id));
 
     let currentOrder = null;
     for (let i = 0; i < orders.length; i++) {
       const order = orders[i];
-      
       if (currentOrder === null) {
         currentOrder = { ...order };
       } else {
@@ -84,7 +79,6 @@ Page({
   // 获取订单列表
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
-    console.log('获取到的 open_id:', open_id);  // 输出 open_id 值
     if (!open_id) {
       wx.showToast({
         title: '请先登录',
@@ -98,21 +92,19 @@ Page({
         name: 'getRecords',  // 云函数名称
         data: { open_id },    // 传递 open_id 给云函数
       });
-
       // 如果查询成功，格式化数据并显示
       if (res.result.success) {
         const allOrders = res.result.data.map(order => ({
           room_id: order.room_id,
           date: order.date,
           slot_id: order.slot_id,
-          reserve_time: this.formatReserveTime(order.reserve_time),  // 格式化时间
-          status: order.status,  // 确保 status 字段存在
+          reserve_time: this.formatReserveTime(order.reserve_time),
+          status: order.status,
           phone: order.phone,
           topic: order.topic,
         }));
         // 合并连续时间段的订单
         const mergedOrders = this.mergeConsecutiveOrders(allOrders);
-
         // 过滤不同状态的订单
         const reservedOrders = mergedOrders.filter(order => order.status === '已预约');
         const completedOrders = mergedOrders.filter(order => order.status === '已完成');
@@ -132,7 +124,6 @@ Page({
         });
       }
     } catch (err) {
-      console.error('获取订单失败', err);
       wx.showToast({
         title: '获取订单失败',
         icon: 'none',
