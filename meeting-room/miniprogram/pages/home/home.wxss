@@ -13,12 +13,17 @@
   padding: 0; /* 去除 padding */
   margin: 0; /* 去除 margin */
   background-color: #f2f2f2;
+  width: 100%; /* 撑满整个宽度 */
 }
 
 .date-item {
   text-align: center;
   flex: 1; /* 平均分布每一项 */
   color: #666;
+  padding: 10px; /* 增加 padding 以增宽导航栏 */
+  display: flex; /* 增加 flex 布局 */
+  flex-direction: column; /* 竖直排列子元素 */
+  align-items: center; /* 子元素居中对齐 */
 }
 
 .date-item.selected {
@@ -30,7 +35,8 @@
 
 .date-item text {
   display: block;
-  font-size: 14px;
+  font-size: 12.2px;
+  margin: 0.1px;
 }
 
 /* 时间段列表 */
