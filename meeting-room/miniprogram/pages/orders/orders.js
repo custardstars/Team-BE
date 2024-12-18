@@ -111,10 +111,13 @@ Page({
           date: order.date,
           slot_id: order.slot_id,
           reserve_time: this.formatReserveTime(order.reserve_time),  // 格式化时间
-          status: order.status,  // 确保 status 字段存在并且被正确返回
-          phone: order.phone,    // 新增显示字段 phone
-          topic: order.topic,    // 新增显示字段 topic
+          status: order.status,  // 确保 status 字段存在
+          phone: order.phone,
+          topic: order.topic,
         }));
+
+        // 输出已合并订单列表
+        console.log('已合并订单列表:', allOrders);
 
         // 合并连续时间段的订单
         const mergedOrders = this.mergeConsecutiveOrders(allOrders);
@@ -123,6 +126,9 @@ Page({
         const reservedOrders = mergedOrders.filter(order => order.status === '已预约');
         const completedOrders = mergedOrders.filter(order => order.status === '已完成');
         const subscribedOrders = mergedOrders.filter(order => order.status === '已订阅');
+
+        // 输出已预约订单
+        console.log('已预约订单:', reservedOrders);
 
         // 更新页面数据
         this.setData({
@@ -145,22 +151,6 @@ Page({
         icon: 'none',
       });
     }
-  },
-
-  // 更新订单数据（例如在预约之后）
-  updateOrdersAfterBooking(newOrder) {
-    const { reservedOrders, allOrders, selectedTab } = this.data;
-    
-    // 确保新订单被添加到已预约订单列表
-    reservedOrders.push(newOrder);  
-    allOrders.push(newOrder); // 更新全部订单
-    
-    // 更新页面数据
-    this.setData({
-      reservedOrders,
-      allOrders,
-      currentOrders: selectedTab === 'all' ? allOrders : reservedOrders, // 根据当前tab显示不同的订单
-    });
   },
 
   // 切换标签
