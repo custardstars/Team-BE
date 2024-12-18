@@ -1,36 +1,38 @@
-<view class="container">
-  <!-- Tabs -->
-  <view class="tabs">
-    <button class="tab-button" bindtap="onTabChange" data-tab="all" 
-      style="{{selectedTab === 'all' ? 'background-color: #ddd;' : ''}}">
-      全部
-    </button>
-    <button class="tab-button" bindtap="onTabChange" data-tab="reserved" 
-      style="{{selectedTab === 'reserved' ? 'background-color: #ddd;' : ''}}">
-      已预约
-    </button>
-    <button class="tab-button" bindtap="onTabChange" data-tab="subscribed" 
-      style="{{selectedTab === 'subscribed' ? 'background-color: #ddd;' : ''}}">
-      已订阅
-    </button>
-    <button class="tab-button" bindtap="onTabChange" data-tab="completed" 
-      style="{{selectedTab === 'completed' ? 'background-color: #ddd;' : ''}}">
-      已完成
-    </button>
+<view class="tabs">
+  <view 
+    class="tab {{selectedTab === 'all' ? 'active' : ''}}" 
+    data-tab="all" 
+    bindtap="onTabChange">
+    全部订单
   </view>
-
-  <!-- 订单记录列表 -->
-  <view class="order-list">
-    <block wx:for="{{currentOrders}}" wx:key="id">
-      <view class="order-item">
-        <text>订单编号：{{item.order_id}}</text>
-        <text>会议室：{{item.meeting_room}}</text>
-        <text>日期：{{item.date}}</text>
-        <text>时间段：{{item.time}}</text>
-      </view>
-    </block>
+  <view 
+    class="tab {{selectedTab === 'reserved' ? 'active' : ''}}" 
+    data-tab="reserved" 
+    bindtap="onTabChange">
+    已预约
   </view>
+  <view 
+    class="tab {{selectedTab === 'completed' ? 'active' : ''}}" 
+    data-tab="completed" 
+    bindtap="onTabChange">
+    已完成
+  </view>
+  <view 
+    class="tab {{selectedTab === 'subscribed' ? 'active' : ''}}" 
+    data-tab="subscribed" 
+    bindtap="onTabChange">
+    已订阅
+  </view>
+</view>
 
-  <!-- 调试：显示 currentOrders -->
-  <view>{{currentOrders}}</view>
+<view class="order-list">
+  <!-- 显示当前订单 -->
+  <block wx:for="{{currentOrders}}" wx:key="index">
+    <view class="order-item">
+      <text>会议室: {{item.room_id}}</text>
+      <text>日期: {{item.date}}</text>
+      <text>时间段: {{item.slot_id}}</text>
+      <text>预约时间: {{item.reserve_time}}</text>
+    </view>
+  </block>
 </view>
