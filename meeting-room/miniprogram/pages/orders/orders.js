@@ -99,9 +99,6 @@ Page({
         data: { open_id },    // 传递 open_id 给云函数
       });
 
-      // 输出返回的结果
-      console.log('云函数返回结果:', res);
-
       // 如果查询成功，格式化数据并显示
       if (res.result.success) {
         const allOrders = res.result.data.map(order => ({
@@ -113,10 +110,6 @@ Page({
           phone: order.phone,
           topic: order.topic,
         }));
-
-        // 输出已合并订单列表
-        console.log('已合并订单列表:', allOrders);
-
         // 合并连续时间段的订单
         const mergedOrders = this.mergeConsecutiveOrders(allOrders);
 
@@ -124,10 +117,6 @@ Page({
         const reservedOrders = mergedOrders.filter(order => order.status === '已预约');
         const completedOrders = mergedOrders.filter(order => order.status === '已完成');
         const subscribedOrders = mergedOrders.filter(order => order.status === '已订阅');
-
-        // 输出已预约订单
-        console.log('已预约订单:', reservedOrders);
-
         // 更新页面数据
         this.setData({
           allOrders: mergedOrders,
