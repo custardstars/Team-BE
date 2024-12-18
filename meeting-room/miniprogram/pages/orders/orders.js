@@ -41,12 +41,14 @@ Page({
         const allOrders = res.result.data.map(order => ({
           room_id: order.room_id,
           date: order.date,
-          slot_id: order.slots,
+          slot_id: order.slots.sort((a, b) => a - b), // 将 slot_id 数组从小到大排序
           reserve_time: this.formatReserveTime(order._id),
           status: order.status,
           phone: order.phone,
           topic: order.topic,
         }));
+        // 对 allOrders 按照 reserve_time 从大到小排序
+        allOrders.sort((a, b) => new Date(b.reserve_time) - new Date(a.reserve_time));
         // 过滤不同状态的订单
         const reservedOrders = allOrders.filter(order => order.status === '已预约');
         const completedOrders = allOrders.filter(order => order.status === '已完成');
@@ -76,7 +78,6 @@ Page({
   // 更新订单数据（例如在预约之后）
   updateOrdersAfterBooking(newOrder) {
     const { reservedOrders, allOrders, selectedTab } = this.data;
-
     // 确保新订单被添加到已预约订单列表
     reservedOrders.push(newOrder);  
     allOrders.push(newOrder); // 更新全部订单

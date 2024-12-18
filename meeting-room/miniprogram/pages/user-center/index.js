@@ -14,7 +14,7 @@ Page({
     const openid = wx.getStorageSync('open_id');
     if (user) {
       this.setData({
-        username: user.nickName,
+        username: user.nickName?user.nickName:'微信用户',
         avatar: user.avatar,
         open_id: openid
       });
@@ -22,7 +22,7 @@ Page({
   },
 
   gotoOrders() {
-    wx.navigateTo({
+    wx.redirectTo({
       url: '/pages/orders/orders',
     });
   },
@@ -72,7 +72,7 @@ Page({
     wx.removeStorageSync('userInfo');
     wx.removeStorage('open_id');
     this.setData({
-      username: '',
+      username: null,
       avatar: '',
       open_id: ''
     });

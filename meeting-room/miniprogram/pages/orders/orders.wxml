@@ -33,8 +33,8 @@
       <text>日期: {{item.date}}</text>
       <text>时间段: {{item.slot_id}}</text>
       <text>预约时间: {{item.reserve_time}}</text>
-      <text>手机号: {{item.phone}}</text> <!-- 新增字段：手机号 -->
-      <text>主题: {{item.topic}}</text>  <!-- 新增字段：主题 -->
+      <text>手机号: {{item.phone}}</text>
+      <text>主题: {{item.topic}}</text>
     </view>
   </block>
 
