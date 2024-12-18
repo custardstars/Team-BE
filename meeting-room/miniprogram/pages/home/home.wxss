@@ -71,3 +71,80 @@ button {
   font-size: 16px;
   border: none;
 }
+
+/* 弹出窗口样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.modal-close {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px 0;
+}
+
+/* 新增样式：空闲和占用会议室分左右两边 */
+.rooms-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.free-rooms, .occupied-rooms {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.room-button {
+  width: 100%; /* 调整按钮宽度 */
+  max-width: 120px; /* 设置最大宽度 */
+  margin: 5px 0; /* 调整间距 */
+  padding: 8px; /* 调整按钮内边距 */
+  text-align: center;
+  background-color: #4883c2;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px; /* 调整按钮字体大小 */
+  cursor: pointer;
+}
