@@ -27,13 +27,14 @@ Page({
     const { date, timeSlot, room } = options;
     console.log('Received parameters:', { date, timeSlot, room }); // 日志输出
   
+    console.log('Set data0:', this.data); // 日志输出
     this.setData({
       selectedDate: date,
       selectedTimeSlot: timeSlot,
       selectedMeetingRoom: room,
     });
+    console.log('Set data1:', this.data); // 日志输出
     if(date && room && timeSlot){
-      this.setData({});
       for(let i=0;i<7;i++){
         if(this.data.weekDates[i].date === date){
           this.setData({selectedDateIndex:i});
@@ -64,7 +65,6 @@ Page({
         if (res.result.code === 200) {
           this.setData({
             meetingRooms: res.result.data,
-            selectedMeetingRoom: res.result.data[0] || '',
           });
         } else {console.error('会议室列表获取失败', res.result.message);}
       },
