@@ -18,24 +18,26 @@
 
 .date-item {
   text-align: center;
-  flex: 1; /* 平均分布每一项 */
+  flex: 1;
   color: #666;
-  padding: 10px; /* 增加 padding 以增宽导航栏 */
-  display: flex; /* 增加 flex 布局 */
-  flex-direction: column; /* 竖直排列子元素 */
-  align-items: center; /* 子元素居中对齐 */
+  padding-top: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .date-item.selected {
   color: #ffffff;
+  /* font-size: 20; */
   background-color: #007aff;
-  font-weight: bold;
-  border-radius: 5px;
+  /* font-weight: bold; */
+  border-radius: 3px;
 }
 
 .date-item text {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 2px; /* 增加下边距，确保日期和星期几间距更自然 */
 }
 

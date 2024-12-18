@@ -26,28 +26,6 @@ exports.main = async (event) => {
       return { success: false, message: '没有找到相关预约记录' };
     }
 
-    // const allOrders = [];
-    // for (const r_time of uniqueReserveTimes) {
-    //   console.log(r_time);
-    //   const queryRes = await db.collection('records')
-    //     .where({
-    //       user_id: open_id,
-    //       reserve_time: r_time,
-    //     })
-    //     .get();
-    //   // 生成 order 对象并加入到 allOrders 中
-    //   const order = {
-    //     reserve_time: r_time,
-    //     slots: queryRes.data.map(doc => doc.slot_id),
-    //     date: queryRes.data[0].date,
-    //     phone: queryRes.data[0].phone,
-    //     topic: queryRes.data[0].topic,
-    //     room_id: queryRes.data[0].room_id,
-    //     status: queryRes.data[0].status,
-    //   };
-    //   allOrders.push(order);
-    // }
-
     return { success: true, data: res.list };
 
   } catch (err) {

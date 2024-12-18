@@ -9,7 +9,7 @@
         <view class="username" bind:tap="onLogin">请点击登录</view>
       </block>
       <block wx:else>
-        <view class="username">{{ username }}</view>
+        <view class="Username">{{ username }}</view>
         <view class="username" bind:tap="onLogout">退出登录</view>
       </block>
 
@@ -19,7 +19,7 @@
       <view class="setting_item" bindtap="gotoOrders">
         <view class="left">
           <image class="setting_icon" src="../../images/icons/setting.svg" />
-          <view class="setting_text">我的订单</view>
+          <view class="setting_text" bindtap="gotoOrders">我的订单</view>
         </view>
         <image class="arrow_icon" src="../../images/arrow.svg" />
       </view>

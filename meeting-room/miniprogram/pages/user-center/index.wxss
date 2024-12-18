@@ -24,8 +24,11 @@
   position: absolute;
   top: -30rpx;
   padding: 0rpx 60rpx;
+  width: 350px;
+  /* margin-right: 20px; */
+  /* padding-right: 80; */
+  /* background-color: purple; */
 }
-
 .avatar {
   width: 128rpx;
   height: 128rpx;
@@ -33,13 +36,22 @@
   border-radius: 50%;
   transform: scale(1.8);
 }
-
 .username {
   color: #333;
   font-size: 32rpx;
   margin-top: 20rpx;
   color: rgba(0, 0, 0, 0.9);
   max-width: 200rpx;
+  /* background-color: blue; */
+}
+.Username {
+  color: #333;
+  font-size: 32rpx;
+  margin-top: 20rpx;
+  color: rgba(0, 0, 0, 0.9);
+  /* background-color: purple; */
+  width: 160px;
+  max-width: 160px;
 }
 
 .settings_container {
