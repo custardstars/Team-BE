@@ -2,23 +2,27 @@ Page({
   data: {
     weekDates: [], // 存放周一到周日
     selectedDateIndex: 0, // 当前选中日期的索引
-
     timeSlots: [], // 时间段数据
-    meetingRooms: ['1号会议室', '2号会议室', '3号会议室'], // 会议室列表
-    selectedMeetingRoom: '1号会议室',
-
+    meetingRooms: [
+      '教书院226',
+      '教书院118',
+      '理科大楼B226',
+      '文史楼107',
+      '文附楼305'
+    ], // 会议室列表
+    selectedMeetingRoom: '教书院226', // 默认选中第一个会议室
     selectedDate: '', // 选择的日期
-    startTime: '08:00',
-    endTime: '09:00',
-
     today: '', // 今天日期
     sevenDaysLater: '', // 7天后的日期
+    showModal: false, // 是否显示弹出窗口
+    currentSlot: null, // 当前选中的时间段
   },
 
   onLoad() {
     this.initWeekDates();
     this.initTimeSlots();
     this.setTodayAndSevenDaysLater();
+    this.fetchReservations(); // 加载时查询当前日期的预约情况
   },
 
   // 初始化周一到周日
@@ -50,6 +54,10 @@ Page({
         time: `${hour}:00--${hour + 1}:00`,
         selected: false,
         status: '可预定', // 默认状态为可预定
+        free: 0,   // 空闲会议室数量
+        occupied: 0, // 占用会议室数量
+        freeRooms: [], // 空闲会议室列表
+        occupiedRooms: [] // 占用会议室列表
       });
     }
     this.setData({ timeSlots });
@@ -73,15 +81,70 @@ Page({
     this.setData({
       selectedDateIndex: index,
       selectedDate: this.data.weekDates[index].date,
+    }, () => {
+      this.fetchReservations(); // 重新查询预约信息
     });
   },
 
-  // 选择时间段（高亮/取消高亮）
+  // 选择时间段（显示弹出窗口）
   onTimeSlotSelect(e) {
     const { index } = e.currentTarget.dataset;
     const timeSlots = this.data.timeSlots;
-    timeSlots[index].selected = !timeSlots[index].selected;
+
+    this.setData({
+      showModal: true, // 显示弹出窗口
+      currentSlot: timeSlots[index]
+    });
+  },
+
+  fetchReservations() {
+    wx.cloud.callFunction({
+      name: 'check_reservation',
+      data: {
+        date: this.data.selectedDate
+      },
+      success: res => {
+        if (res.result.code === 200) {
+          this.updateTimeSlots(res.result.data);
+        } else {
+          console.error('预约查询失败', res.result.message);
+        }
+      },
+      fail: err => {
+        console.error('云函数调用失败', err);
+      }
+    });
+  },
+
+  // 根据预约数据更新时间段状态
+  updateTimeSlots(reservations) {
+    const meetingRooms = this.data.meetingRooms;
+    const timeSlots = this.data.timeSlots.map(slot => {
+      const occupiedRooms = reservations.filter(r => r.slot_id === slot.time).map(r => r.room_id);
+      const freeRooms = meetingRooms.filter(room => !occupiedRooms.includes(room));
+      return {
+        ...slot,
+        free: freeRooms.length,
+        occupied: occupiedRooms.length,
+        status: `空闲 ${freeRooms.length}, 占用 ${occupiedRooms.length}`,
+        freeRooms: freeRooms,
+        occupiedRooms: occupiedRooms
+      };
+    });
     this.setData({ timeSlots });
+  },
+
+  // 关闭弹出窗口
+  closeModal() {
+    this.setData({
+      showModal: false,
+      currentSlot: null
+    });
+  },
+
+  // 防止点击弹出窗口内部时关闭窗口
+  preventClose(e) {
+    e.stopPropagation();
   },
 
   // 确定按钮事件
@@ -95,7 +158,7 @@ Page({
         confirmText: '去登录',
         success: (res) => {
           if (res.confirm) {
-            wx.switchTab({url: '/pages/user-center/index'});
+            wx.switchTab({ url: '/pages/user-center/index' });
           }
         }
       });
