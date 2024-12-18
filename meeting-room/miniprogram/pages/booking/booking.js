@@ -5,6 +5,7 @@ Page({
 
     timeSlots: [], // 时间段数据
     meetingRooms: null, // 会议室列表
+    selectedMeetingRoom: '',
 
     selectedDate: '', // 选择的日期
     meetingRoomSelected: false,
@@ -17,36 +18,53 @@ Page({
   },
 
   onLoad(options) {
+    this.initWeekDates();
+    this.initTimeSlots();
+    this.initRooms();
     console.log('onLoad invoked'); // 日志确认onLoad方法是否被调用
     
     // 接收传递的参数
     const { date, timeSlot, room } = options;
     console.log('Received parameters:', { date, timeSlot, room }); // 日志输出
   
-    // 将参数设置到data中
     this.setData({
       selectedDate: date,
       selectedTimeSlot: timeSlot,
       selectedMeetingRoom: room,
     });
+    if(date && room && timeSlot){
+      this.setData({});
+      for(let i=0;i<7;i++){
+        if(this.data.weekDates[i].date === date){
+          this.setData({selectedDateIndex:i});
+        }
+      }
+      const timeSlots = this.data.timeSlots.map(slot => {
+        if(slot.time==timeSlot){
+          slot.selected=true;
+          slot.status='selected';
+        }
+        return slot;
+      });
+      this.setData({ 
+        timeSlots,
+        meetingRoomSelected: true,
+      });
+    }
     console.log('Set data:', this.data); // 日志输出
-  
-    // 初始化页面数据
-    this.initWeekDates();
-    this.initTimeSlots();
-    this.initRooms();
+    
     this.fetchReservations(); // 加载时查询当前日期的预约情况
     console.log('Initialization complete'); // 日志输出
   },
  
   initRooms() {
     wx.cloud.callFunction({
-      name: 'get_rooms', // 调用云函数
+      name: 'get_rooms',
       success: res => {
         if (res.result.code === 200) {
           this.setData({
             meetingRooms: res.result.data,
-            selectedMeetingRoom: res.result.data[0] || '', // 默认选中第一个会议室
+            selectedMeetingRoom: res.result.data[0] || '',
           });
         } else {console.error('会议室列表获取失败', res.result.message);}
       },
