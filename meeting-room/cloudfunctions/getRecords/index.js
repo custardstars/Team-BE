@@ -1,73 +1,37 @@
-const cloud = require('wx-server-sdk');
-cloud.init();
-const db = cloud.database();
-
+// 云函数入口函数
 exports.main = async (event, context) => {
-  const { user_id } = event;
+  const db = wx.cloud.database();
+  const reservations = db.collection('reservations');
+  const { user_id } = event;  // 获取传入的 user_id
+
+  console.log('开始查询，传入的 user_id:', user_id);  // 输出传入的 user_id
 
   try {
-    // 获取用户的预约记录
-    const reservationRecords = await db.collection('reservations')
-      .aggregate()
-      .match({ user_id: user_id })
-      .lookup({
-        from: 'time_slots',
-        localField: 'slot_id',
-        foreignField: 'slot_id',
-        as: 'slot_info'
-      })
-      .lookup({
-        from: 'rooms',
-        localField: 'room_id',
-        foreignField: 'room_id',
-        as: 'room_info'
-      })
-      .end();
+    // 查询数据库
+    const result = await reservations.where({
+      user_id: user_id  // 根据 user_id 查询
+    }).get();
 
-    // 获取用户的订阅记录（从 waiting 表中获取）
-    const waitingRecords = await db.collection('waitings')
-      .aggregate()
-      .match({ user_id: user_id })
-      .lookup({
-        from: 'time_slots',
-        localField: 'slot_id',
-        foreignField: 'slot_id',
-        as: 'slot_info'
-      })
-      .lookup({
-        from: 'rooms',
-        localField: 'room_id',
-        foreignField: 'room_id',
-        as: 'room_info'
-      })
-      .end();
+    console.log('查询结果:', result);  // 输出查询结果
 
-    // 获取用户的取消记录（从 records 表中获取，状态为 "cancelled"）
-    const cancelledRecords = await db.collection('records')
-      .aggregate()
-      .match({ user_id: user_id, status: 'cancelled' })
-      .lookup({
-        from: 'time_slots',
-        localField: 'slot_id',
-        foreignField: 'slot_id',
-        as: 'slot_info'
-      })
-      .lookup({
-        from: 'rooms',
-        localField: 'room_id',
-        foreignField: 'room_id',
-        as: 'room_info'
-      })
-      .end();
+    if (result.data.length === 0) {
+      console.log('没有找到订单');  // 如果没有查询到数据
+      return {
+        code: 404,
+        message: '没有找到订单',
+      };
+    }
 
+    // 返回查询结果
     return {
-      reservationRecords: reservationRecords.list,
-      waitingRecords: waitingRecords.list,
-      cancelledRecords: cancelledRecords.list
+      code: 200,
+      data: result.data,  // 返回查询到的数据
     };
-
   } catch (err) {
-    console.error(err);
-    return { error: err };
+    console.error('查询失败', err);  // 如果查询失败，输出错误信息
+    return {
+      code: 500,
+      message: '查询失败',
+    };
   }
 };

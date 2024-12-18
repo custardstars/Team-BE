@@ -4,8 +4,8 @@ Page({
     selectedDateIndex: 0, // 当前选中日期的索引
 
     timeSlots: [], // 时间段数据
-    meetingRooms:null, // 会议室列表
-    selectedMeetingRoom:'',
+    meetingRooms: null, // 会议室列表
+    selectedMeetingRoom: '',
 
     selectedDate: '', // 选择的日期
 
@@ -13,10 +13,11 @@ Page({
     sevenDaysLater: '', // 7天后的日期
 
     number: 2,
-    numberOptions: [2,3,4,5,6],
+    numberOptions: [2, 3, 4, 5, 6],
     topic: '',
     phone: '',
   },
+
   onLoad() {
     this.initWeekDates();
     this.initTimeSlots();
@@ -24,6 +25,7 @@ Page({
     this.setTodayAndSevenDaysLater();
     this.fetchReservations(); // 加载时查询当前日期的预约情况
   },
+
   initRooms() {
     wx.cloud.callFunction({
       name: 'get_rooms', // 调用云函数
@@ -99,6 +101,7 @@ Page({
       selectedDate: weekDates[0].date,
     });
   },
+
   // 设置时间段（每小时一段）
   initTimeSlots() {
     const timeSlots = [];
@@ -110,6 +113,7 @@ Page({
     }
     this.setData({ timeSlots });
   },
+
   setTodayAndSevenDaysLater() {
     const now = new Date();
     const sevenDaysLater = new Date();
@@ -119,6 +123,7 @@ Page({
       sevenDaysLater: sevenDaysLater.toISOString().split('T')[0],
     });
   },
+
   // 选择日期
   onDateSelect(e) {
     const { index } = e.currentTarget.dataset;
@@ -129,6 +134,7 @@ Page({
       this.fetchReservations(); // 重新查询预约信息
     });
   },
+
   // 选择时间段（高亮/取消高亮）
   onTimeSlotSelect(e) {
     const { index } = e.currentTarget.dataset;
@@ -136,30 +142,34 @@ Page({
     timeSlots[index].selected = !timeSlots[index].selected;
     this.setData({ timeSlots });
   },
+
   // 选择会议室
   onMeetingRoomChange(e) {
     this.setData({
       selectedMeetingRoom: this.data.meetingRooms[e.detail.value],
     });
   },
+
   // 会议人数
-  onNumberChange(e){
-    this.setData({ 
+  onNumberChange(e) {
+    this.setData({
       number: this.data.numberOptions[e.detail.value],
     });
   },
+
   // 会议主题
   onEndTimeInput(e) {
     this.setData({ topic: e.detail.value });
   },
+
   // 联系方式
   onPhoneInput(e) {
     this.setData({ phone: e.detail.value });
   },
+
   // 确定按钮事件
   onConfirm() {
     const open_id = wx.getStorageSync('open_id');
-    console.log(open_id);
     if (!open_id || open_id.length == 0) {
       wx.showModal({
         title: '提示',
@@ -175,15 +185,15 @@ Page({
       return;
     }
 
-    // 获取选中的时间段
     const selectedSlots = this.data.timeSlots
       .filter((slot) => slot.selected)
       .map((slot) => slot.time);
-    if(selectedSlots.length==0){
+
+    if (selectedSlots.length == 0) {
       wx.showModal({
         title: '提示',
         content: '未选择需要预约的时间',
-        showCancel:false,
+        showCancel: false,
       });
       return;
     }
@@ -202,7 +212,7 @@ Page({
               user_id: open_id,
               selectedSlots: selectedSlots,
               room_id: this.data.selectedMeetingRoom,
-              date: this.data.selectedDate
+              date: this.data.selectedDate,
             },
             success: (res) => {
               wx.showToast({
@@ -213,13 +223,14 @@ Page({
               // 返回并更新 `orders` 页面
               const pages = getCurrentPages();
               const prevPage = pages[pages.length - 2]; // 获取上一个页面
-              prevPage.updateOrdersAfterBooking({
-                room_name: this.data.selectedMeetingRoom,
-                date: this.data.selectedDate,
-                period: selectedSlots.join(', '),
-                status: '已预约',
-              });
-              wx.navigateBack();
+              if (prevPage && typeof prevPage.updateOrdersAfterBooking === 'function') {
+                prevPage.updateOrdersAfterBooking({
+                  room_name: this.data.selectedMeetingRoom,
+                  date: this.data.selectedDate,
+                  period: selectedSlots.join(', '),
+                });
+              }
+              wx.navigateBack(); // 返回上一个页面
             },
             fail: (err) => {
               console.error('预约失败', err);
