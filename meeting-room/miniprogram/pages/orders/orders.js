@@ -7,15 +7,12 @@ Page({
     selectedTab: 'all',     // 当前选中的订单标签
     currentOrders: [],      // 当前显示的订单列表
   },
-
   onLoad() {
     this.fetchOrders();  // 加载数据时调用
   },
-
   onShow() {
     this.fetchOrders();  // 每次页面显示时都刷新数据
   },
-
   // 时间格式化函数（将时间戳格式化为你希望的格式）
   formatReserveTime(date) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
@@ -26,12 +23,14 @@ Page({
   mergeConsecutiveOrders(orders) {
     const mergedOrders = [];
 
+
     // 按照预约时间（reserve_time）降序排序，最新下单的排在最上面
     orders.sort((a, b) => {
       const dateA = new Date(a.reserve_time).getTime();
       const dateB = new Date(b.reserve_time).getTime();
       return dateB - dateA;  // 降序排序：最新的排在前面
     });
+
 
     let currentOrder = null;
 
@@ -93,7 +92,6 @@ Page({
   // 获取订单列表
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
-    console.log('获取到的 open_id:', open_id);  // 输出 open_id 值
 
     if (!open_id) {
       wx.showToast({
@@ -102,37 +100,30 @@ Page({
       });
       return;
     }
-
     try {
       // 调用云函数获取预约记录
       const res = await wx.cloud.callFunction({
         name: 'getRecords',  // 云函数名称
         data: { open_id },    // 传递 open_id 给云函数
       });
-
-      // 输出返回的结果
-      console.log('云函数返回结果:', res);
-
       // 如果查询成功，格式化数据并显示
       if (res.result.success) {
         const allOrders = res.result.data.map(order => ({
           room_id: order.room_id,
           date: order.date,
           slot_id: order.slot_id,
-          reserve_time: this.formatReserveTime(order.reserve_time),  // 格式化时间
-          status: order.status,  // 确保 status 字段存在并且被正确返回
-          phone: order.phone,    // 新增显示字段 phone
-          topic: order.topic,    // 新增显示字段 topic
-        }));
 
+          reserve_time: this.formatReserveTime(order.reserve_time),
+          status: order.status,
+          phone: order.phone,
+          topic: order.topic,
+        }));
         // 合并连续时间段的订单
         const mergedOrders = this.mergeConsecutiveOrders(allOrders);
-
         // 过滤不同状态的订单
         const reservedOrders = mergedOrders.filter(order => order.status === '已预约');
         const completedOrders = mergedOrders.filter(order => order.status === '已完成');
         const subscribedOrders = mergedOrders.filter(order => order.status === '已订阅');
-
         // 更新页面数据
         this.setData({
           allOrders: mergedOrders,
@@ -148,7 +139,6 @@ Page({
         });
       }
     } catch (err) {
-      console.error('获取订单失败', err);
       wx.showToast({
         title: '获取订单失败',
         icon: 'none',

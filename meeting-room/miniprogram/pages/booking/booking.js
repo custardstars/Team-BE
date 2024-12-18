@@ -87,20 +87,21 @@ Page({
       },
       fail: err => {console.error('云函数调用失败', err);}
     });
-    // wx.cloud.callFunction({
-    //   name: 'get_subscribe',
-    //   data: {
-    //     room_id: this.data.selectedMeetingRoom,
-    //     date: this.data.selectedDate,
-    //     user_id: open_id,
-    //   },
-    //   success: res => {
-    //     if (res.result.code === 200) {
-    //       this.updateSubscribe(res.result.data);
-    //     } else {console.error('预约查询失败', res.result.message);}
-    //   },
-    //   fail: err => {console.error('云函数调用失败', err);}
-    // });
+    wx.cloud.callFunction({
+      name: 'get_subscribe',
+      data: {
+        room_id: this.data.selectedMeetingRoom,
+        date: this.data.selectedDate,
+        user_id: open_id,
+      },
+      success: res => {
+        if (res.result.code === 200) {
+          this.updateSubscribe(res.result.data);
+        } 
+        else {console.error('预约查询失败', res.result.message);}
+      },
+      fail: err => {console.error('云函数调用失败', err);}
+    });
   },
   // 更新时间段状态
   updateTimeSlots(reservations) {
@@ -191,7 +192,7 @@ Page({
       meetingRoomSelected:true,
     }, () => {
       this.resetTimeSlotsSelection();
-      this.fetchReservations(); // 重新查询预约信息
+      this.fetchReservations();
     });
   },
   // 重置时间段状态
@@ -305,6 +306,7 @@ Page({
                 });
               },
             });
+            this.fetchReservations();
           }
         },
       });
@@ -315,7 +317,6 @@ Page({
         title: '订阅确认',
         content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.map((slot) => slot.time).join(', ')}`,
         showCancel: true,
-  
         success: (res) => {
           if (res.confirm) {
             wx.cloud.callFunction({
@@ -344,10 +345,10 @@ Page({
                 });
               },
             });
+            this.fetchReservations();
           }
         },
       });
     }
-    this.fetchReservations();
   },
 });
