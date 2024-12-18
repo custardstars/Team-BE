@@ -18,7 +18,7 @@
     <view class="time-grid">
       <block wx:for="{{timeSlots}}" wx:key="index">
         <view 
-          class="time-item {{item.selected ? 'highlight' : ''}}" 
+          class="time-item {{item.selected ? 'highlight' : ''}} {{item.disabled ? 'disabled' : ''}}" 
           bindtap="onTimeSlotSelect"
           data-index="{{index}}">
           <text>{{item.time}}</text>
@@ -35,7 +35,7 @@
     <picker mode="selector" range="{{meetingRooms}}" bindchange="onMeetingRoomChange">
       <view class="form-item">
         <text>会议室</text>
-        <text>{{selectedMeetingRoom}}</text>
+        <text>{{meetingRoomSelected ? selectedMeetingRoom : '请选择'}}</text>
       </view>
     </picker>
 
@@ -46,10 +46,6 @@
       </view>
     </picker>
 
-    <!-- <view class="form-item">
-      <text>会议人数</text>
-      <input type="time" value="请输入人数" bindinput="onNumberInput" />
-    </view> -->
     <view class="form-item">
       <text>会议主题</text>
       <input type="time" value="请输入主题" bindinput="onTopicInput" />
@@ -63,3 +59,4 @@
   <!-- 确定按钮 -->
   <button class="confirm-btn" bindtap="onConfirm">确定</button>
 </view>
+

@@ -11,7 +11,7 @@
 .date-nav {
   display: flex;
   justify-content: space-between;
-  background-color: #e9004f;
+  background-color: #d6d6d6;
   padding: 0;
   margin: 0;
 }
@@ -19,14 +19,15 @@
 .date-item {
   flex: 1;
   text-align: center;
-  color: #fff;
+  color: rgb(0, 0, 0);
   padding: 8px 0;
 }
 
 .date-item.selected {
-  background-color: #b0003a;
-  font-weight: bold;
+  background-color: #aec4ff;
+  /* font-weight: bold; */
 }
+
 
 /* 时间段选择 */
 .section-title {
@@ -53,14 +54,23 @@
   text-align: center;
   margin: 5px 0;
   padding: 8px 0;
-  border: 1px solid #eb2e6d;
+  border: 1px solid #000000;
   border-radius: 8px;
-  color: #f0233e;
+  color: #000000;
 }
-
 .time-item.highlight {
-  background-color: #db4048;
+  background-color: #c2c2c2;
+  border: 1px solid #2b2b2b;
+  color: rgb(0, 0, 0);
+}
+.time-item.disabled {
+  background-color: #474747;
   color: #fff;
+}
+.time-item.disabled-selected {
+  background-color: #d9534f;
+  color: #ffffff;
+  border: 1px solid #d9534f;
 }
 
 /* 基础预约信息 */
@@ -69,11 +79,9 @@
   margin-top: 20px;
   width: 300px;
   height: 280px;
-  /* margin: 20px 0; */
   padding: 0 10px;
   /* background-color: blueviolet; */
 }
-
 .form-item {
   display: flex;
   justify-content: space-between;
@@ -94,15 +102,10 @@
 .confirm-btn {
   width: 80%;
   margin: 20px auto;
-  background-color: #e9004f;
-  color: #fff;
+  background-color: #d1d1d1;
+  color: rgb(58, 47, 47);
   padding: 10px 0;
   border-radius: 8px;
   text-align: center;
   font-size: 16px;
-}
-/* 无法选择的会议室 */
-.time-item[disabled] {
-  pointer-events: none; /* 禁止点击 */
-  opacity: 0.6;         /* 半透明 */
 }
