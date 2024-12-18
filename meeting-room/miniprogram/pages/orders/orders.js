@@ -85,7 +85,6 @@ Page({
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
     console.log('获取到的 open_id:', open_id);  // 输出 open_id 值
-    
     if (!open_id) {
       wx.showToast({
         title: '请先登录',
@@ -93,7 +92,6 @@ Page({
       });
       return;
     }
-
     try {
       // 调用云函数获取预约记录
       const res = await wx.cloud.callFunction({

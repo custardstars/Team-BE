@@ -72,6 +72,10 @@
   background-color: #474747;
   color: #fff;
 }
+.time-item.subscribed {
+  background-color: #82c2fd;
+  color: rgb(49, 49, 49);
+}
 .time-item.disabled-selected {
   background-color: #d9534f;
   color: #ffffff;
