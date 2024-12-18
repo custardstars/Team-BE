@@ -123,6 +123,7 @@ Page({
 
   // 选择时间段（高亮/取消高亮）
   onTimeSlotSelect(e) {
+    // 未选择会议室
     if(!this.data.meetingRoomSelected){
       wx.showModal({
         title: '提示',
@@ -188,12 +189,10 @@ Page({
       number: this.data.numberOptions[e.detail.value],
     });
   },
-
   // 会议主题
   onTopicInput(e) {
     this.setData({ topic: e.detail.value });
   },
-
   // 联系方式
   onPhoneInput(e) {
     this.setData({ phone: e.detail.value });
@@ -216,11 +215,10 @@ Page({
       });
       return;
     }
-
     const selectedSlots = this.data.timeSlots
       .filter((slot) => slot.selected)
       .map((slot) => slot.time);
-
+    // 未选择时间
     if (selectedSlots.length == 0) {
       wx.showModal({
         title: '提示',
@@ -229,6 +227,7 @@ Page({
       });
       return;
     }
+    // 会议主题为空
     if(!this.data.topic || this.data.topic==''){
       wx.showModal({
         title: '提示',
@@ -237,6 +236,7 @@ Page({
       });
       return;
     }
+    // 手机号为空
     if(!this.data.phone || this.data.phone==''){
       wx.showModal({
         title: '提示',
@@ -323,5 +323,6 @@ Page({
         },
       });
     }
+    this.fetchReservations();
   },
 });

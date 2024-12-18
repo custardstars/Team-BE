@@ -1,20 +1,26 @@
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
-
 const db = cloud.database();
 
 exports.main = async (event) => {
   const { user_id, selectedSlots, room_id, date,phone,number,topic } = event;
-  if (!user_id || !selectedSlots || selectedSlots.length === 0) {
-    return { success: false, message: '参数错误' };
-  }
-
   try {
     const reserveTime = new Date();
     // 创建预约记录的任务
     const tasks = selectedSlots.map(slot => {
-      console.log(`Adding slot: ${slot} for user_id: ${user_id}`);
-
+      db.collection('records').add({
+        data: {
+          user_id,
+          slot_id: slot,
+          room_id,
+          date,
+          topic,
+          phone,
+          number,
+          reserve_time: reserveTime,
+          status: '已预约',
+        }
+      });
       return db.collection('reservations').add({
         data: {
           user_id,

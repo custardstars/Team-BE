@@ -5,32 +5,27 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
 const db = cloud.database();
 
 exports.main = async (event) => {
-  const { user_id, selectedSlots, room_id, date } = event;
-  if (!user_id || !selectedSlots || selectedSlots.length === 0) {
-    console.error("Invalid parameters:", { user_id, selectedSlots });
-    return { success: false, message: '参数错误' };
-  }
-
+  const { user_id, selectedSlots, room_id, date,phone,number,topic } = event;
   try {
     const reserveTime = new Date();
-    console.log("Starting to add reservations...");
-
     // 创建预约记录的任务
     const tasks = selectedSlots.map(slot => {
-      return db.collection('reservations').add({
+      return db.collection('records').add({
         data: {
           user_id,
-          slot_id: slot, // 将预约的时间段slot存储
+          slot_id: slot,
           room_id,
           date,
-          reserve_time: reserveTime
+          topic,
+          phone,
+          number,
+          reserve_time: reserveTime,
+          status: '已订阅',
         }
       });
     });
-
     // 执行所有预约任务
     await Promise.all(tasks);
-
     return { success: true, message: '预约成功' };
   } catch (err) {
     return { success: false, error: err };
