@@ -1,5 +1,7 @@
-const cloud = require('wx-server-sdk');
-cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
+// 云函数入口文件
+const cloud = require('wx-server-sdk')
+
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
 const db = cloud.database();
 
 exports.main = async (event) => {
@@ -8,7 +10,7 @@ exports.main = async (event) => {
     const reserveTime = new Date();
     // 创建预约记录的任务
     const tasks = selectedSlots.map(slot => {
-      db.collection('records').add({
+      return db.collection('records').add({
         data: {
           user_id,
           slot_id: slot,
@@ -18,19 +20,7 @@ exports.main = async (event) => {
           phone,
           number,
           reserve_time: reserveTime,
-          status: '已预约',
-        }
-      });
-      return db.collection('reservations').add({
-        data: {
-          user_id,
-          slot_id: slot, // 将预约的时间段slot存储
-          room_id,
-          date,
-          topic,
-          phone,
-          number,
-          reserve_time: reserveTime
+          status: '已订阅',
         }
       });
     });

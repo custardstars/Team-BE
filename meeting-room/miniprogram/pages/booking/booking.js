@@ -123,6 +123,7 @@ Page({
 
   // 选择时间段（高亮/取消高亮）
   onTimeSlotSelect(e) {
+    // 未选择会议室
     if(!this.data.meetingRoomSelected){
       wx.showModal({
         title: '提示',
@@ -188,12 +189,10 @@ Page({
       number: this.data.numberOptions[e.detail.value],
     });
   },
-
   // 会议主题
-  onEndTimeInput(e) {
+  onTopicInput(e) {
     this.setData({ topic: e.detail.value });
   },
-
   // 联系方式
   onPhoneInput(e) {
     this.setData({ phone: e.detail.value });
@@ -216,15 +215,32 @@ Page({
       });
       return;
     }
-
     const selectedSlots = this.data.timeSlots
       .filter((slot) => slot.selected)
       .map((slot) => slot.time);
-
+    // 未选择时间
     if (selectedSlots.length == 0) {
       wx.showModal({
         title: '提示',
         content: '未选择需要预约的时间',
+        showCancel: false,
+      });
+      return;
+    }
+    // 会议主题为空
+    if(!this.data.topic || this.data.topic==''){
+      wx.showModal({
+        title: '提示',
+        content: '请输入会议主题',
+        showCancel: false,
+      });
+      return;
+    }
+    // 手机号为空
+    if(!this.data.phone || this.data.phone==''){
+      wx.showModal({
+        title: '提示',
+        content: '请输入联系方式',
         showCancel: false,
       });
       return;
@@ -235,7 +251,6 @@ Page({
         title: '预约确认',
         content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
         showCancel: true,
-
         success: (res) => {
           if (res.confirm) {
             // 发送预约请求
@@ -245,7 +260,10 @@ Page({
                 user_id: open_id,
                 selectedSlots: selectedSlots,
                 room_id: this.data.selectedMeetingRoom,
-                date: this.data.selectedDate
+                date: this.data.selectedDate,
+                phone: this.data.phone,
+                number: this.data.number,
+                topic: this.data.topic
               },
               success: (res) => {
                 wx.showToast({
@@ -281,7 +299,10 @@ Page({
                 user_id: open_id,
                 selectedSlots: selectedSlots,
                 room_id: this.data.selectedMeetingRoom,
-                date: this.data.selectedDate
+                date: this.data.selectedDate,
+                phone: this.data.phone,
+                number: this.data.number,
+                topic: this.data.topic
               },
               success: (res) => {
                 wx.showToast({
@@ -302,5 +323,6 @@ Page({
         },
       });
     }
+    this.fetchReservations();
   },
 });
