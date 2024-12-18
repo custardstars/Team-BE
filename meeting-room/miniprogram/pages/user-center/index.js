@@ -77,5 +77,11 @@ Page({
       open_id: ''
     });
     wx.showToast({ title: '已退出登录' });
+  },
+  // 新增方法：跳转到 orders 页面
+  goToOrdersPage(e) {
+    wx.reLaunch({
+      url: `/pages/orders/orders`,
+    });
   }
 });
