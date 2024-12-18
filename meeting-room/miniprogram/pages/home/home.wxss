@@ -35,8 +35,8 @@
 
 .date-item text {
   display: block;
-  font-size: 12.2px;
-  margin: 0.1px;
+  font-size: 12px;
+  margin-bottom: 2px; /* 增加下边距，确保日期和星期几间距更自然 */
 }
 
 /* 时间段列表 */
@@ -142,15 +142,15 @@ button {
 }
 
 .room-button {
-  width: 100%; /* 调整按钮宽度 */
-  max-width: 120px; /* 设置最大宽度 */
+  width: 90%; /* 调整按钮宽度 */
+  max-width: 100px; /* 设置最大宽度 */
   margin: 5px 0; /* 调整间距 */
   padding: 8px; /* 调整按钮内边距 */
   text-align: center;
-  background-color: #4883c2;
+  background-color: #007aff;
   color: #fff;
   border: none;
-  border-radius: 20px;
-  font-size: 14px; /* 调整按钮字体大小 */
+  border-radius: 5px;
+  font-size: 12px; /* 调整按钮字体大小 */
   cursor: pointer;
 }
