@@ -55,7 +55,6 @@ Page({
       selectedDate: weekDates[0].date,
     });
   },
-  
   initTimeSlots() {
     const timeSlots = [];
     for (let hour = 8; hour < 20; hour++) {
@@ -74,6 +73,7 @@ Page({
       this.updateTimeSlots([]);
       return;
     }
+    const open_id = wx.getStorageSync('open_id');
     wx.cloud.callFunction({
       name: 'check_reservation',
       data: {
@@ -87,6 +87,20 @@ Page({
       },
       fail: err => {console.error('云函数调用失败', err);}
     });
+    // wx.cloud.callFunction({
+    //   name: 'get_subscribe',
+    //   data: {
+    //     room_id: this.data.selectedMeetingRoom,
+    //     date: this.data.selectedDate,
+    //     user_id: open_id,
+    //   },
+    //   success: res => {
+    //     if (res.result.code === 200) {
+    //       this.updateSubscribe(res.result.data);
+    //     } else {console.error('预约查询失败', res.result.message);}
+    //   },
+    //   fail: err => {console.error('云函数调用失败', err);}
+    // });
   },
   // 更新时间段状态
   updateTimeSlots(reservations) {
@@ -103,6 +117,15 @@ Page({
       else {
         if(slot.selected) slot.status = 'selected';
         else slot.status = '';
+      }
+      return slot;
+    });
+    this.setData({ timeSlots });
+  },
+  updateSubscribe(subscriptions) {
+    const timeSlots = this.data.timeSlots.map(slot => {
+      if (subscriptions.find(r => r.slot_id === slot.time)) {
+        slot.status = 'subscribed';
       }
       return slot;
     });
@@ -135,7 +158,7 @@ Page({
     const { index } = e.currentTarget.dataset;
     const timeSlots = this.data.timeSlots;
     const currentSlot = timeSlots[index];
-    if(currentSlot.status === 'reserved')return;
+    if(currentSlot.status === 'reserved' || currentSlot.status == 'subscribed')return;
     if(!currentSlot.selected){
       if(currentSlot.status === ''){
         if(timeSlots.some(slot => slot.status==='disabled-selected'))return;
@@ -171,6 +194,7 @@ Page({
       this.fetchReservations(); // 重新查询预约信息
     });
   },
+  // 重置时间段状态
   resetTimeSlotsSelection() {
     const timeSlots = this.data.timeSlots.map(slot => {
       slot.selected = false; // 重置为未选中状态
@@ -215,9 +239,7 @@ Page({
       });
       return;
     }
-    const selectedSlots = this.data.timeSlots
-      .filter((slot) => slot.selected)
-      .map((slot) => slot.time);
+    const selectedSlots = this.data.timeSlots.filter((slot) => slot.selected);
     // 未选择时间
     if (selectedSlots.length == 0) {
       wx.showModal({
@@ -245,11 +267,14 @@ Page({
       });
       return;
     }
+    const time_slots = this.data.timeSlots
+    .filter((slot) => slot.selected)
+    .map((slot) => slot.time);
     // 预约
-    if(selectedSlots[0].status=='selected'){
+    if(selectedSlots[0].status == 'selected'){
       wx.showModal({
         title: '预约确认',
-        content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
+        content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.map((slot) => slot.time).join(', ')}`,
         showCancel: true,
         success: (res) => {
           if (res.confirm) {
@@ -258,7 +283,7 @@ Page({
               name: 'add_reservation',
               data: {
                 user_id: open_id,
-                selectedSlots: selectedSlots,
+                selectedSlots: time_slots,
                 room_id: this.data.selectedMeetingRoom,
                 date: this.data.selectedDate,
                 phone: this.data.phone,
@@ -288,16 +313,16 @@ Page({
     else{
       wx.showModal({
         title: '订阅确认',
-        content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
+        content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.map((slot) => slot.time).join(', ')}`,
         showCancel: true,
   
         success: (res) => {
           if (res.confirm) {
             wx.cloud.callFunction({
-              name: 'add_reservation',
+              name: 'add_subscribe',
               data: {
                 user_id: open_id,
-                selectedSlots: selectedSlots,
+                selectedSlots: time_slots,
                 room_id: this.data.selectedMeetingRoom,
                 date: this.data.selectedDate,
                 phone: this.data.phone,
