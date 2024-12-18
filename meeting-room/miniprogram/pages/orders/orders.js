@@ -22,30 +22,42 @@ Page({
   // 合并连续时间段的函数
   mergeConsecutiveOrders(orders) {
     const mergedOrders = [];
-    // 按照房间和日期排序，确保合并顺序
-    orders.sort((a, b) => a.room_id.localeCompare(b.room_id) || a.date.localeCompare(b.date) || a.slot_id.localeCompare(b.slot_id));
+
+
+    // 按照预约时间（reserve_time）降序排序，最新下单的排在最上面
+    orders.sort((a, b) => {
+      const dateA = new Date(a.reserve_time).getTime();
+      const dateB = new Date(b.reserve_time).getTime();
+      return dateB - dateA;  // 降序排序：最新的排在前面
+    });
+
 
     let currentOrder = null;
+
+    // 遍历所有订单
     for (let i = 0; i < orders.length; i++) {
       const order = orders[i];
+
       if (currentOrder === null) {
-        currentOrder = { ...order };
+        currentOrder = { ...order }; // 初始化第一个订单
       } else {
-        // 判断当前记录与前一条记录的时间段是否连续
+        // 判断当前订单与前一订单的时间段是否连续
         const currentSlotEndTime = this.getEndTime(currentOrder.slot_id);
         const nextSlotStartTime = this.getStartTime(order.slot_id);
-        
-        // 如果连续，则合并
+
+        // 如果连续（即当前订单结束时间等于下一个订单开始时间），则合并
         if (this.isConsecutive(currentSlotEndTime, nextSlotStartTime)) {
+          // 合并时间段（拼接时间段）
           currentOrder.slot_id = `${currentOrder.slot_id.split('--')[0]}--${order.slot_id.split('--')[1]}`;
         } else {
+          // 否则，将当前订单加入合并列表
           mergedOrders.push(currentOrder);
-          currentOrder = { ...order };
+          currentOrder = { ...order };  // 更新当前订单
         }
       }
     }
-    
-    // 将最后一个订单加入
+
+    // 将最后一个订单加入合并列表
     if (currentOrder !== null) {
       mergedOrders.push(currentOrder);
     }
@@ -55,7 +67,8 @@ Page({
 
   // 判断两个时间段是否是连续的
   isConsecutive(endTime, startTime) {
-    return new Date(endTime).getTime() === new Date(startTime).getTime();
+    const diff = new Date(startTime).getTime() - new Date(endTime).getTime();
+    return diff === 0;  // 判断两个时间段是否紧接
   },
 
   // 获取时间段结束时间
@@ -79,6 +92,7 @@ Page({
   // 获取订单列表
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
+
     if (!open_id) {
       wx.showToast({
         title: '请先登录',
@@ -98,6 +112,7 @@ Page({
           room_id: order.room_id,
           date: order.date,
           slot_id: order.slot_id,
+
           reserve_time: this.formatReserveTime(order.reserve_time),
           status: order.status,
           phone: order.phone,
@@ -129,6 +144,22 @@ Page({
         icon: 'none',
       });
     }
+  },
+
+  // 更新订单数据（例如在预约之后）
+  updateOrdersAfterBooking(newOrder) {
+    const { reservedOrders, allOrders, selectedTab } = this.data;
+
+    // 确保新订单被添加到已预约订单列表
+    reservedOrders.push(newOrder);  
+    allOrders.push(newOrder); // 更新全部订单
+
+    // 更新页面数据
+    this.setData({
+      reservedOrders,
+      allOrders,
+      currentOrders: selectedTab === 'all' ? allOrders : reservedOrders, // 根据当前tab显示不同的订单
+    });
   },
 
   // 切换标签
