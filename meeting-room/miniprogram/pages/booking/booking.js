@@ -190,7 +190,7 @@ Page({
   },
 
   // 会议主题
-  onEndTimeInput(e) {
+  onTopicInput(e) {
     this.setData({ topic: e.detail.value });
   },
 
@@ -229,13 +229,28 @@ Page({
       });
       return;
     }
+    if(!this.data.topic || this.data.topic==''){
+      wx.showModal({
+        title: '提示',
+        content: '请输入会议主题',
+        showCancel: false,
+      });
+      return;
+    }
+    if(!this.data.phone || this.data.phone==''){
+      wx.showModal({
+        title: '提示',
+        content: '请输入联系方式',
+        showCancel: false,
+      });
+      return;
+    }
     // 预约
     if(selectedSlots[0].status=='selected'){
       wx.showModal({
         title: '预约确认',
         content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
         showCancel: true,
-
         success: (res) => {
           if (res.confirm) {
             // 发送预约请求
@@ -245,7 +260,10 @@ Page({
                 user_id: open_id,
                 selectedSlots: selectedSlots,
                 room_id: this.data.selectedMeetingRoom,
-                date: this.data.selectedDate
+                date: this.data.selectedDate,
+                phone: this.data.phone,
+                number: this.data.number,
+                topic: this.data.topic
               },
               success: (res) => {
                 wx.showToast({
@@ -281,7 +299,10 @@ Page({
                 user_id: open_id,
                 selectedSlots: selectedSlots,
                 room_id: this.data.selectedMeetingRoom,
-                date: this.data.selectedDate
+                date: this.data.selectedDate,
+                phone: this.data.phone,
+                number: this.data.number,
+                topic: this.data.topic
               },
               success: (res) => {
                 wx.showToast({
