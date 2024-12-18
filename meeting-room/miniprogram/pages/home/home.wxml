@@ -18,7 +18,7 @@
       <view 
         class="time-item" 
         bindtap="onTimeSlotSelect" 
-        data-time="{{item.time}}">
+        data-index="{{index}}">
         <text class="time">{{item.time}}</text>
         <text class="status">{{item.status}}</text>
       </view>
