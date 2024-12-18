@@ -22,6 +22,7 @@ Page({
   // 获取订单列表
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
+
     if (!open_id) {
       wx.showToast({
         title: '请先登录',
@@ -70,6 +71,22 @@ Page({
         icon: 'none',
       });
     }
+  },
+
+  // 更新订单数据（例如在预约之后）
+  updateOrdersAfterBooking(newOrder) {
+    const { reservedOrders, allOrders, selectedTab } = this.data;
+
+    // 确保新订单被添加到已预约订单列表
+    reservedOrders.push(newOrder);  
+    allOrders.push(newOrder); // 更新全部订单
+
+    // 更新页面数据
+    this.setData({
+      reservedOrders,
+      allOrders,
+      currentOrders: selectedTab === 'all' ? allOrders : reservedOrders, // 根据当前tab显示不同的订单
+    });
   },
 
   // 切换标签
