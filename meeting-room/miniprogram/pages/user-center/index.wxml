@@ -12,18 +12,15 @@
         <view class="Username">{{ username }}</view>
         <view class="username" bind:tap="onLogout">退出登录</view>
       </block>
-
     </view>
     <view class="settings_container">
-
-      <view class="setting_item" bindtap="gotoOrders">
+      <view class="setting_item" bindtap="goToOrdersPage">
         <view class="left">
           <image class="setting_icon" src="../../images/icons/setting.svg" />
           <view class="setting_text" bindtap="gotoOrders">我的订单</view>
         </view>
         <image class="arrow_icon" src="../../images/arrow.svg" />
       </view>
-
       <view class="setting_item">
         <view class="left">
           <image class="setting_icon" src="../../images/icons/setting.svg" />
