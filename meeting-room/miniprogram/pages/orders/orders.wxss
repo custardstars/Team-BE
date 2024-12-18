@@ -1,43 +1,27 @@
-/* 样式：容器 */
-.container {
-  padding: 0 10px; /* 给页面增加一些边距 */
-}
-
-/* 样式：tabs */
 .tabs {
-  display: flex;                 /* 使用 flexbox 布局 */
-  justify-content: space-between; /* 标签按钮均匀分布 */
-  flex-wrap: wrap;               /* 使标签内容自动换行 */
-  margin: 10px 0;
-  background-color: #f8f8f8;     /* 标签栏背景颜色 */
-  border-radius: 10px;           /* 圆角边框 */
-  padding: 5px 0;                /* 内边距 */
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.tab-button {
-  width: 23%;                       /* 每个按钮占据 23% 宽度 */
-  padding: 8px 0;                   /* 减少上下内边距 */
-  background-color: #fff;
-  border: none;
-  text-align: center;               /* 文本居中 */
-  border-radius: 5px;               /* 按钮圆角 */
-  font-size: 14px;                  /* 减小字体大小 */
-  color: #333;
-  margin: 5px 0;                    /* 按钮间距 */
+.tab {
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
 }
 
-.tab-button:hover {
-  background-color: #e0e0e0;    /* 按钮悬停时背景色变化 */
+.tab.active {
+  background-color: #007aff;
+  color: white;
 }
 
-/* 样式：order-list */
 .order-list {
-  margin-top: 20px;  /* 在标签栏下方增加间距 */
+  padding: 10px;
 }
 
 .order-item {
   padding: 15px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ddd;
 }
 
 .order-item text {

@@ -14,6 +14,8 @@ Page({
     selectedDate: '', // 选择的日期
     today: '', // 今天日期
     sevenDaysLater: '', // 7天后的日期
+    showModal: false, // 是否显示弹出窗口
+    currentSlot: null, // 当前选中的时间段
   },
 
   onLoad() {
@@ -54,6 +56,8 @@ Page({
         status: '可预定', // 默认状态为可预定
         free: 0,   // 空闲会议室数量
         occupied: 0, // 占用会议室数量
+        freeRooms: [], // 空闲会议室列表
+        occupiedRooms: [] // 占用会议室列表
       });
     }
     this.setData({ timeSlots });
@@ -82,12 +86,15 @@ Page({
     });
   },
 
-  // 选择时间段（高亮/取消高亮）
+  // 选择时间段（显示弹出窗口）
   onTimeSlotSelect(e) {
     const { index } = e.currentTarget.dataset;
     const timeSlots = this.data.timeSlots;
-    timeSlots[index].selected = !timeSlots[index].selected;
-    this.setData({ timeSlots });
+
+    this.setData({
+      showModal: true, // 显示弹出窗口
+      currentSlot: timeSlots[index]
+    });
   },
 
   fetchReservations() {
@@ -113,16 +120,31 @@ Page({
   updateTimeSlots(reservations) {
     const meetingRooms = this.data.meetingRooms;
     const timeSlots = this.data.timeSlots.map(slot => {
-      const occupiedRooms = reservations.filter(r => r.slot_id === slot.time).length;
-      const freeRooms = meetingRooms.length - occupiedRooms;
+      const occupiedRooms = reservations.filter(r => r.slot_id === slot.time).map(r => r.room_id);
+      const freeRooms = meetingRooms.filter(room => !occupiedRooms.includes(room));
       return {
         ...slot,
-        free: freeRooms,
-        occupied: occupiedRooms,
-        status: `空闲 ${freeRooms}, 占用 ${occupiedRooms}`
+        free: freeRooms.length,
+        occupied: occupiedRooms.length,
+        status: `空闲 ${freeRooms.length}, 占用 ${occupiedRooms.length}`,
+        freeRooms: freeRooms,
+        occupiedRooms: occupiedRooms
       };
     });
     this.setData({ timeSlots });
+  },
+
+  // 关闭弹出窗口
+  closeModal() {
+    this.setData({
+      showModal: false,
+      currentSlot: null
+    });
+  },
+
+  // 防止点击弹出窗口内部时关闭窗口
+  preventClose(e) {
+    e.stopPropagation();
   },
 
   // 确定按钮事件
