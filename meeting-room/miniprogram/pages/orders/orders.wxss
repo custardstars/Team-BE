@@ -29,6 +29,7 @@
 
 /* 订单项的样式 */
 .order-item {
+  position: relative; /* 为了定位取消按钮 */
   margin-bottom: 15px;
   padding: 15px;
   border: 1px solid #ddd;
@@ -43,22 +44,27 @@
   color: #333;
 }
 
-/* 会议室信息 */
-.order-room {
-  font-weight: bold;
-  font-size: 16px;
+/* 取消按钮的样式 */
+.cancel-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 14px;
+  color: #ff4d4f;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ff4d4f;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
-/* 手机号字段的样式 */
-.order-phone {
-  font-style: italic;
-  color: #555;
-}
-
-/* 主题字段的样式 */
-.order-topic {
-  font-style: italic;
-  color: #777;
+/* 取消状态的样式 */
+.cancelled-status {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 14px;
+  color: #888;
 }
 
 /* 如果没有订单时的样式 */
