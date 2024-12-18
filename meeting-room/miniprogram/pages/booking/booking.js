@@ -22,7 +22,7 @@ Page({
     this.initTimeSlots();
     this.initRooms();
     this.setTodayAndSevenDaysLater();
-    // this.fetchReservations(); // 加载时查询当前日期的预约情况
+    this.fetchReservations(); // 加载时查询当前日期的预约情况
   },
   initRooms() {
     wx.cloud.callFunction({
@@ -67,7 +67,7 @@ Page({
   updateTimeSlots(reservations) {
     const open_id = wx.getStorageSync('open_id');
     const timeSlots = this.data.timeSlots.map(slot => {
-      const reserved = reservations.find(r => r.time === slot.time);
+      const reserved = reservations.find(r => r.slot_id === slot.time);
       if (reserved) {
         slot.selected = false;
         slot.disabled = true;
@@ -125,10 +125,9 @@ Page({
     this.setData({
       selectedDateIndex: index,
       selectedDate: this.data.weekDates[index].date,
+    }, () => {
+      this.fetchReservations(); // 重新查询预约信息
     });
-    // }, () => {
-    //   this.fetchReservations(); // 重新查询预约信息
-    // });
   },
   // 选择时间段（高亮/取消高亮）
   onTimeSlotSelect(e) {
@@ -161,7 +160,8 @@ Page({
   // 确定按钮事件
   onConfirm() {
     const open_id = wx.getStorageSync('open_id');
-    if (!open_id) {
+    console.log(open_id);
+    if (!open_id || open_id.length == 0) {
       wx.showModal({
         title: '提示',
         content: '请先登录',

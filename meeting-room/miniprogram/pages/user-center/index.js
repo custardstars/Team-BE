@@ -12,7 +12,7 @@ Page({
     // 检查本地存储
     const user = wx.getStorageSync('userInfo');
     const openid = wx.getStorageSync('open_id');
-    if (openid) {
+    if (user) {
       this.setData({
         username: user.nickName,
         avatar: user.avatar,

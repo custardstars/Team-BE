@@ -9,7 +9,7 @@
         <view class="username" bind:tap="onLogin">请点击登录</view>
       </block>
       <block wx:else>
-        <view class="username">openId: {{ open_id }}</view>
+        <view class="username">{{ username }}</view>
         <view class="username" bind:tap="onLogout">退出登录</view>
       </block>
 
