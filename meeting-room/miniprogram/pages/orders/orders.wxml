@@ -29,12 +29,16 @@
   <!-- 显示当前订单 -->
   <block wx:for="{{currentOrders}}" wx:key="index">
     <view class="order-item">
+      <view class="cancel-btn" bindtap="cancelOrder" data-order-id="{{item._id}}" data-status="{{item.status}}">
+        取消
+      </view>
       <text>会议室: {{item.room_id}}</text>
       <text>日期: {{item.date}}</text>
       <text>时间段: {{item.slot_id}}</text>
       <text>预约时间: {{item.reserve_time}}</text>
-      <text>手机号: {{item.phone}}</text>
-      <text>主题: {{item.topic}}</text>
+      <text>手机号: {{item.phone}}</text> <!-- 新增字段：手机号 -->
+      <text>主题: {{item.topic}}</text>  <!-- 新增字段：主题 -->
+      <view wx:if="{{item.status === '已取消'}}" class="cancelled-status">已取消</view>
     </view>
   </block>
 

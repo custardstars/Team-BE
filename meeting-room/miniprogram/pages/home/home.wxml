@@ -26,8 +26,8 @@
   </scroll-view>
 
   <!-- 弹出窗口 -->
-  <view wx:if="{{showModal}}" class="modal" bindtap="closeModal">
-    <view class="modal-content" bindtap="preventClose">
+  <view wx:if="{{showModal}}" class="modal">
+    <view class="modal-content">
       <view class="modal-header">
         <text class="modal-title">会议室详情</text>
         <button class="modal-close" bindtap="closeModal">关闭</button>
@@ -38,13 +38,13 @@
           <view class="free-rooms">
             <text class="section-title">空闲会议室:</text>
             <block wx:for="{{currentSlot.freeRooms}}" wx:key="index">
-              <button class="room-button">{{item}}</button>
+              <button class="room-button" data-room="{{item}}" bindtap="goToBookingPage">{{item}}</button>
             </block>
           </view>
           <view class="occupied-rooms">
             <text class="section-title">占用会议室:</text>
             <block wx:for="{{currentSlot.occupiedRooms}}" wx:key="index">
-              <button class="room-button">{{item}}</button>
+              <button class="room-button" data-room="{{item}}" bindtap="goToBookingPage">{{item}}</button>
             </block>
           </view>
         </view>

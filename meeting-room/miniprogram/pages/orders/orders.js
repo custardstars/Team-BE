@@ -7,13 +7,15 @@ Page({
     selectedTab: 'all',     // 当前选中的订单标签
     currentOrders: [],      // 当前显示的订单列表
   },
+
   onLoad() {
     this.fetchOrders();  // 加载数据时调用
   },
+
   onShow() {
     this.fetchOrders();  // 每次页面显示时都刷新数据
   },
-  // 时间格式化函数（将时间戳格式化为你希望的格式）
+
   formatReserveTime(date) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
     return new Date(date).toLocaleString('zh-CN', options);
@@ -22,7 +24,6 @@ Page({
   // 获取订单列表
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
-
     if (!open_id) {
       wx.showToast({
         title: '请先登录',
@@ -31,14 +32,14 @@ Page({
       return;
     }
     try {
-      // 调用云函数获取预约记录
       const res = await wx.cloud.callFunction({
-        name: 'getRecords',  // 云函数名称
-        data: { open_id },    // 传递 open_id 给云函数
+        name: 'getRecords',
+        data: { open_id },
       });
-      // 如果查询成功，格式化数据并显示
+
       if (res.result.success) {
         const allOrders = res.result.data.map(order => ({
+          _id: order._id,
           room_id: order.room_id,
           date: order.date,
           slot_id: order.slots.sort((a, b) => a - b), // 将 slot_id 数组从小到大排序
@@ -75,34 +76,131 @@ Page({
     }
   },
 
-  // 更新订单数据（例如在预约之后）
   updateOrdersAfterBooking(newOrder) {
     const { reservedOrders, allOrders, selectedTab } = this.data;
-    // 确保新订单被添加到已预约订单列表
     reservedOrders.push(newOrder);  
-    allOrders.push(newOrder); // 更新全部订单
-
-    // 更新页面数据
+    allOrders.push(newOrder);
     this.setData({
       reservedOrders,
       allOrders,
-      currentOrders: selectedTab === 'all' ? allOrders : reservedOrders, // 根据当前tab显示不同的订单
+      currentOrders: selectedTab === 'all' ? allOrders : reservedOrders,
     });
   },
 
-  // 切换标签
   onTabChange(e) {
     const { tab } = e.currentTarget.dataset;
     let currentOrders = [];
-    // 根据不同标签过滤显示的订单
     if (tab === 'all') currentOrders = this.data.allOrders;
     if (tab === 'reserved') currentOrders = this.data.reservedOrders;
     if (tab === 'completed') currentOrders = this.data.completedOrders;
     if (tab === 'subscribed') currentOrders = this.data.subscribedOrders;
-    // 更新当前显示的订单列表
     this.setData({
       selectedTab: tab,
       currentOrders,
+    });
+  },
+
+  async cancelOrder(e) {
+    const { orderId, status, index, type } = e.currentTarget.dataset;
+
+    // 输出传入的参数和 currentOrders 数据
+    console.log('cancelOrder invoked with data:', { orderId, status, index, type });
+    console.log('currentOrders:', this.data.currentOrders);
+
+    // 检查 index 是否有效
+    if (typeof index === 'undefined' || !this.data.currentOrders[index]) {
+      wx.showToast({
+        title: '无法找到该订单',
+        icon: 'none',
+      });
+      console.error('Invalid index or currentOrders[index] is undefined');
+      return;
+    }
+
+    // 如果订单已取消，则直接返回
+    if (status === '已取消') {
+      wx.showToast({
+        title: '订单已取消',
+        icon: 'none',
+      });
+      return;
+    }
+
+    wx.showModal({
+      title: '确认取消',
+      content: '您确定要取消这个预约吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            let updateStatusRes;
+            if (type === 'reserved') {
+              // 取消预约订单，更新 status 并删除 reservations 数据
+              updateStatusRes = await wx.cloud.callFunction({
+                name: 'updateOrderStatus',
+                data: {
+                  orderId,
+                  status: '已取消',
+                },
+              });
+
+              if (updateStatusRes.result.success) {
+                const deleteRes = await wx.cloud.callFunction({
+                  name: 'deleteReservation',
+                  data: { orderId },
+                });
+
+                if (!deleteRes.result.success) {
+                  throw new Error(deleteRes.result.message || '删除预约记录失败');
+                }
+              } else {
+                throw new Error(updateStatusRes.result.message || '更新订单状态失败');
+              }
+            } else if (type === 'subscribed') {
+              updateStatusRes = await wx.cloud.callFunction({
+                name: 'updateOrderStatus',
+                data: {
+                  orderId,
+                  status: '已取消',
+                },
+              });
+
+              if (!updateStatusRes.result.success) {
+                throw new Error(updateStatusRes.result.message || '更新订单状态失败');
+              }
+            }
+
+            // 确保更新的是有效的订单数据
+            const updatedOrders = this.data.currentOrders;
+
+            if (updatedOrders && updatedOrders[index]) {
+              // 更新本地订单数据
+              updatedOrders[index].status = '已取消';
+              updatedOrders[index].cancelled = true;  // 设置取消标记，用来显示已取消文本
+
+              console.log('Updated order:', updatedOrders[index]);
+
+              this.setData({
+                currentOrders: updatedOrders,
+              });
+
+              wx.showToast({
+                title: '订单已取消',
+                icon: 'success',
+              });
+            } else {
+              wx.showToast({
+                title: '无法更新本地订单数据',
+                icon: 'none',
+              });
+            }
+          } catch (error) {
+            wx.showToast({
+              title: error.message || '取消失败，请稍后再试',
+              icon: 'none',
+            });
+          }
+        }
+      },
     });
   },
 });

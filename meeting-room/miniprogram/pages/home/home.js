@@ -86,16 +86,31 @@ Page({
     });
   },
 
-  // 选择时间段（显示弹出窗口）
-  onTimeSlotSelect(e) {
-    const { index } = e.currentTarget.dataset;
-    const timeSlots = this.data.timeSlots;
+// 选择时间段（显示弹出窗口）
+onTimeSlotSelect(e) {
+  const { index } = e.currentTarget.dataset;
+  const timeSlots = this.data.timeSlots;
 
-    this.setData({
-      showModal: true, // 显示弹出窗口
-      currentSlot: timeSlots[index]
-    });
-  },
+  this.setData({
+    showModal: true, // 显示弹出窗口
+    currentSlot: timeSlots[index]
+  });
+},
+
+// 新增方法：跳转到booking页面
+goToBookingPage(e) {
+  const { room } = e.currentTarget.dataset;
+  const { selectedDate, currentSlot } = this.data;
+
+  console.log('Redirecting to booking page with:', { date: selectedDate, timeSlot: currentSlot.time, room });
+
+  wx.reLaunch({
+    url: `/pages/booking/booking?date=${selectedDate}&timeSlot=${currentSlot.time}&room=${room}`,
+  });
+
+  this.closeModal(); // 跳转后关闭弹出窗口
+},
+
 
   fetchReservations() {
     wx.cloud.callFunction({
@@ -142,10 +157,7 @@ Page({
     });
   },
 
-  // 防止点击弹出窗口内部时关闭窗口
-  preventClose(e) {
-    e.stopPropagation();
-  },
+
 
   // 确定按钮事件
   onConfirm() {

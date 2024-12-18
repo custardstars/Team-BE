@@ -115,8 +115,16 @@ button {
 }
 
 .modal-close {
+  width: 90%; /* 调整按钮宽度 */
+  max-width: 100px; /* 设置最大宽度 */
+  margin: 5px 0; /* 调整间距 */
+  padding: 8px; /* 调整按钮内边距 */
+  text-align: center;
+  background-color: #6cadf3;
+  color: rgb(253, 253, 253);
   border: none;
-  background: none;
+  border-radius: 5px;
+  font-size: 12px; /* 调整按钮字体大小 */
   cursor: pointer;
 }
 

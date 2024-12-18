@@ -5,10 +5,9 @@ Page({
 
     timeSlots: [], // 时间段数据
     meetingRooms: null, // 会议室列表
-    selectedMeetingRoom: '',
 
     selectedDate: '', // 选择的日期
-    meetingRoomSelected:false,
+    meetingRoomSelected: false,
 
     number: 2,
     numberOptions: [2, 3, 4, 5, 6],
@@ -17,13 +16,29 @@ Page({
     reserveOrSubscribe: '预约',
   },
 
-  onLoad() {
+  onLoad(options) {
+    console.log('onLoad invoked'); // 日志确认onLoad方法是否被调用
+    
+    // 接收传递的参数
+    const { date, timeSlot, room } = options;
+    console.log('Received parameters:', { date, timeSlot, room }); // 日志输出
+  
+    // 将参数设置到data中
+    this.setData({
+      selectedDate: date,
+      selectedTimeSlot: timeSlot,
+      selectedMeetingRoom: room,
+    });
+    console.log('Set data:', this.data); // 日志输出
+  
+    // 初始化页面数据
     this.initWeekDates();
     this.initTimeSlots();
     this.initRooms();
     this.fetchReservations(); // 加载时查询当前日期的预约情况
+    console.log('Initialization complete'); // 日志输出
   },
-
+ 
   initRooms() {
     wx.cloud.callFunction({
       name: 'get_rooms', // 调用云函数
