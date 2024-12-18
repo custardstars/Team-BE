@@ -1,20 +1,31 @@
 Page({
   data: {
-    weekDates: [], // 存放周一到周日的数据
-    selectedDateIndex: 0, // 选中的日期索引
+    weekDates: [], // 存放周一到周日
+    selectedDateIndex: 0, // 当前选中日期的索引
+
     timeSlots: [], // 时间段数据
+    meetingRooms: ['1号会议室', '2号会议室', '3号会议室'], // 会议室列表
+    selectedMeetingRoom: '1号会议室',
+
+    selectedDate: '', // 选择的日期
+    startTime: '08:00',
+    endTime: '09:00',
+
+    today: '', // 今天日期
+    sevenDaysLater: '', // 7天后的日期
   },
 
   onLoad() {
     this.initWeekDates();
     this.initTimeSlots();
+    this.setTodayAndSevenDaysLater();
   },
 
-  // 初始化周一到周日的日期
+  // 初始化周一到周日
   initWeekDates() {
     const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-    const weekDates = [];
     const now = new Date();
+    const weekDates = [];
 
     for (let i = 0; i < 7; i++) {
       const date = new Date(now);
@@ -27,24 +38,32 @@ Page({
 
     this.setData({
       weekDates,
+      selectedDate: weekDates[0].date,
     });
   },
 
-  // 初始化时间段数据（每个小时占一行）
+  // 设置时间段（每小时一段）
   initTimeSlots() {
     const timeSlots = [];
-    const startHour = 8; // 从 8:00 开始
-    const endHour = 20; // 到 18:00 结束
-
-    for (let hour = startHour; hour < endHour; hour++) {
+    for (let hour = 8; hour < 20; hour++) {
       timeSlots.push({
-        time: `${hour}:00 -- ${hour + 1}:00`,
-        status: '空闲',
+        time: `${hour}:00--${hour + 1}:00`,
+        selected: false,
+        status: '可预定', // 默认状态为可预定
       });
     }
+    this.setData({ timeSlots });
+  },
+
+  // 设置今日和七天后的日期范围
+  setTodayAndSevenDaysLater() {
+    const now = new Date();
+    const sevenDaysLater = new Date();
+    sevenDaysLater.setDate(now.getDate() + 7);
 
     this.setData({
-      timeSlots,
+      today: now.toISOString().split('T')[0],
+      sevenDaysLater: sevenDaysLater.toISOString().split('T')[0],
     });
   },
 
@@ -53,16 +72,67 @@ Page({
     const { index } = e.currentTarget.dataset;
     this.setData({
       selectedDateIndex: index,
+      selectedDate: this.data.weekDates[index].date,
     });
   },
 
-  // 选择时间段并跳转到 booking 页面
+  // 选择时间段（高亮/取消高亮）
   onTimeSlotSelect(e) {
-    const { time } = e.currentTarget.dataset;
-    const selectedDate = this.data.weekDates[this.data.selectedDateIndex];
+    const { index } = e.currentTarget.dataset;
+    const timeSlots = this.data.timeSlots;
+    timeSlots[index].selected = !timeSlots[index].selected;
+    this.setData({ timeSlots });
+  },
 
-    wx.navigateTo({
-      url: `/pages/booking/booking?date=${selectedDate.date}&time=${time}`,
+  // 确定按钮事件
+  onConfirm() {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({url: '/pages/user-center/index'});
+          }
+        }
+      });
+      return;
+    }
+
+    const selectedSlots = this.data.timeSlots
+      .filter((slot) => slot.selected)
+      .map((slot) => slot.time);
+
+    wx.showModal({
+      title: '预约确认',
+      content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
+      showCancel: true,
+    });
+
+    wx.cloud.callFunction({
+      name: 'add_reservation',
+      data: {
+        user_id: open_id,
+        selectedSlots: selectedSlots,
+        meetingRoom: this.data.selectedMeetingRoom,
+        date: this.data.selectedDate,
+      },
+      success: res => {
+        wx.showToast({
+          title: '预约成功',
+          icon: 'success'
+        });
+      },
+      fail: err => {
+        console.error('预约失败', err);
+        wx.showToast({
+          title: '预约失败',
+          icon: 'error'
+        });
+      }
     });
   },
 });
