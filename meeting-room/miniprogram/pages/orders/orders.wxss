@@ -1,13 +1,16 @@
+/* Tabs 栏的样式 */
 .tabs {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
 }
 
 .tab {
-  padding: 10px 20px;
-  text-align: center;
+  padding: 10px;
+  font-size: 16px;
   cursor: pointer;
+  color: #333;
 }
 
 .tab.active {
@@ -15,16 +18,58 @@
   color: white;
 }
 
-.order-list {
-  padding: 10px;
+.tab:hover {
+  background-color: #f0f0f0;
 }
 
+/* 订单列表的样式 */
+.order-list {
+  padding: 20px;
+}
+
+/* 订单项的样式 */
 .order-item {
+  margin-bottom: 15px;
   padding: 15px;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
 .order-item text {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* 会议室信息 */
+.order-room {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 手机号字段的样式 */
+.order-phone {
+  font-style: italic;
+  color: #555;
+}
+
+/* 主题字段的样式 */
+.order-topic {
+  font-style: italic;
+  color: #777;
+}
+
+/* 如果没有订单时的样式 */
+.order-list wx:elif {
+  text-align: center;
+  color: #888;
+  font-size: 16px;
+  margin-top: 30px;
+}
+
+/* 统一调整订单项间的间距和样式 */
+.order-item + .order-item {
+  margin-top: 10px;
 }

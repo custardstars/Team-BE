@@ -15,8 +15,8 @@ exports.main = async (event) => {
   try {
     console.log("开始查询用户的预约记录...");
     
-    // 根据 open_id 查询 reservations 集合中的记录
-    const result = await db.collection('reservations').where({ user_id: open_id }).get();
+    // 根据 open_id 查询 records 集合中的记录
+    const result = await db.collection('records').where({ user_id: open_id }).get();
 
     // 查看查询结果
     console.log("查询结果:", result);
@@ -26,6 +26,7 @@ exports.main = async (event) => {
       return { success: false, message: '没有找到相关预约记录' };
     }
 
+    // 返回查询结果
     return { success: true, data: result.data };
   } catch (err) {
     console.error("查询失败:", err);
