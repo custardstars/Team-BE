@@ -19,7 +19,7 @@
       <block wx:for="{{timeSlots}}" wx:key="index">
         <view 
           class="time-item {{item.selected ? 'highlight' : ''}}" 
-          bindtap="onTimeSlotSelect" 
+          bindtap="onTimeSlotSelect"
           data-index="{{index}}">
           <text>{{item.time}}</text>
         </view>
@@ -39,22 +39,24 @@
       </view>
     </picker>
 
-    <!-- 日期选择 -->
-    <picker mode="date" start="{{today}}" end="{{sevenDaysLater}}" bindchange="onDateChange">
+    <picker mode="selector" range="{{numberOptions}}" bindchange="onNumberChange">
       <view class="form-item">
-        <text>日期</text>
-        <text>{{selectedDate}}</text>
+        <text>会议人数</text>
+        <text>{{number}}</text>
       </view>
     </picker>
 
-    <!-- 自定义时间输入 -->
+    <!-- <view class="form-item">
+      <text>会议人数</text>
+      <input type="time" value="请输入人数" bindinput="onNumberInput" />
+    </view> -->
     <view class="form-item">
-      <text>开始</text>
-      <input type="time" value="{{startTime}}" bindinput="onStartTimeInput" />
+      <text>会议主题</text>
+      <input type="time" value="请输入主题" bindinput="onTopicInput" />
     </view>
     <view class="form-item">
-      <text>结束</text>
-      <input type="time" value="{{endTime}}" bindinput="onEndTimeInput" />
+      <text>联系方式</text>
+      <input type="time" value="xxx-xxxx-xxxx" bindinput="onPhoneInput" />
     </view>
   </view>
 
