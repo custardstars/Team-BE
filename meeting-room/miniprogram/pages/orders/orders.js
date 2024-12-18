@@ -21,62 +21,7 @@ Page({
     return new Date(date).toLocaleString('zh-CN', options);
   },
 
-  mergeConsecutiveOrders(orders) {
-    const mergedOrders = [];
-    orders.sort((a, b) => {
-      const dateA = new Date(a.reserve_time).getTime();
-      const dateB = new Date(b.reserve_time).getTime();
-      return dateB - dateA;  // 降序排序：最新的排在最前面
-    });
-
-    let currentOrder = null;
-
-    for (let i = 0; i < orders.length; i++) {
-      const order = orders[i];
-
-      if (currentOrder === null) {
-        currentOrder = { ...order };
-      } else {
-        const currentSlotEndTime = this.getEndTime(currentOrder.slot_id);
-        const nextSlotStartTime = this.getStartTime(order.slot_id);
-
-        if (this.isConsecutive(currentSlotEndTime, nextSlotStartTime)) {
-          currentOrder.slot_id = `${currentOrder.slot_id.split('--')[0]}--${order.slot_id.split('--')[1]}`;
-        } else {
-          mergedOrders.push(currentOrder);
-          currentOrder = { ...order };
-        }
-      }
-    }
-
-    if (currentOrder !== null) {
-      mergedOrders.push(currentOrder);
-    }
-
-    return mergedOrders;
-  },
-
-  isConsecutive(endTime, startTime) {
-    const diff = new Date(startTime).getTime() - new Date(endTime).getTime();
-    return diff === 0;
-  },
-
-  getEndTime(slot_id) {
-    const times = slot_id.split('--');
-    const [hour, minute] = times[1].split(':');
-    const endTime = new Date();
-    endTime.setHours(hour, minute, 0);
-    return endTime;
-  },
-
-  getStartTime(slot_id) {
-    const times = slot_id.split('--');
-    const [hour, minute] = times[0].split(':');
-    const startTime = new Date();
-    startTime.setHours(hour, minute, 0);
-    return startTime;
-  },
-
+  // 获取订单列表
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
     if (!open_id) {
@@ -97,24 +42,23 @@ Page({
           _id: order._id,
           room_id: order.room_id,
           date: order.date,
-          slot_id: order.slot_id,
-          reserve_time: this.formatReserveTime(order.reserve_time),
+          slot_id: order.slots,
+          reserve_time: this.formatReserveTime(order._id),
           status: order.status,
           phone: order.phone,
           topic: order.topic,
         }));
-        
-        const mergedOrders = this.mergeConsecutiveOrders(allOrders);
-        const reservedOrders = mergedOrders.filter(order => order.status === '已预约');
-        const completedOrders = mergedOrders.filter(order => order.status === '已完成');
-        const subscribedOrders = mergedOrders.filter(order => order.status === '已订阅');
-
+        // 过滤不同状态的订单
+        const reservedOrders = allOrders.filter(order => order.status === '已预约');
+        const completedOrders = allOrders.filter(order => order.status === '已完成');
+        const subscribedOrders = allOrders.filter(order => order.status === '已订阅');
+        // 更新页面数据
         this.setData({
-          allOrders: mergedOrders,
+          allOrders,
           reservedOrders,
           completedOrders,
           subscribedOrders,
-          currentOrders: mergedOrders,  
+          currentOrders: allOrders,  // 默认显示全部订单
         });
       } else {
         wx.showToast({
