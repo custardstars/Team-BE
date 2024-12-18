@@ -18,7 +18,7 @@
     <view class="time-grid">
       <block wx:for="{{timeSlots}}" wx:key="index">
         <view 
-          class="time-item {{item.selected ? 'highlight' : ''}} {{item.disabled ? 'disabled' : ''}}" 
+          class="time-item {{item.status}}" 
           bindtap="onTimeSlotSelect"
           data-index="{{index}}">
           <text>{{item.time}}</text>

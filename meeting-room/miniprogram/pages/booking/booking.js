@@ -63,6 +63,7 @@ Page({
     this.setData({ timeSlots });
   },
 
+  // 获取数据库中当前日期、会议室下，被预约的时间段
   fetchReservations() {
     wx.cloud.callFunction({
       name: 'check_reservation',
@@ -84,12 +85,15 @@ Page({
     const timeSlots = this.data.timeSlots.map(slot => {
       const reserved = reservations.find(r => r.slot_id === slot.time);
       if (reserved) {
-        slot.selected = false;
-        slot.disabled = true;
-        slot.color = reserved.user_id === open_id ? 'green' : 'red';
-      } else {
-        slot.disabled = false;
-        slot.color = ''; // 重置颜色
+        if(reserved.user_id === open_id){
+          slot.status = 'reserved';
+        }
+        else if(slot.selected) slot.status = 'disabled-selected';
+        else slot.status = 'disabled';
+      } 
+      else {
+        if(slot.selected) slot.status = 'selected';
+        else slot.status = '';
       }
       return slot;
     });
@@ -112,13 +116,20 @@ Page({
     const { index } = e.currentTarget.dataset;
     const timeSlots = this.data.timeSlots;
     const currentSlot = timeSlots[index];
-    if(currentSlot.selected){
-      const hasUndisabledSelected = timeSlots.some(slot => slot.status === 'disabled-selected');
-    }
-    else{
-      
+    if(currentSlot.status === 'reserved')return;
+    if(!currentSlot.selected){
+      if(currentSlot.status === ''){
+        if(timeSlots.some(slot => slot.status==='disabled-selected'))return;
+      }
+      if(currentSlot.status == 'disabled'){
+        if(timeSlots.some(slot => slot.status==='selected'))return;
+      }
     }
     timeSlots[index].selected = !timeSlots[index].selected;
+    if(timeSlots[index].status=='')timeSlots[index].status='selected';
+    else if(timeSlots[index].status=='selected')timeSlots[index].status='';
+    else if(timeSlots[index].status=='disabled')timeSlots[index].status='disabled-selected';
+    else if(timeSlots[index].status=='disabled-selected')timeSlots[index].status='disabled';
     this.setData({ timeSlots });
   },
 

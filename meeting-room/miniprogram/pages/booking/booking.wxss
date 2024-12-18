@@ -58,7 +58,12 @@
   border-radius: 8px;
   color: #000000;
 }
-.time-item.highlight {
+.time-item.reserved {
+  background-color: #d6f5ad;
+  border: 1px solid #2b2b2b;
+  color: rgb(0, 0, 0);
+}
+.time-item.selected {
   background-color: #c2c2c2;
   border: 1px solid #2b2b2b;
   color: rgb(0, 0, 0);
