@@ -14,6 +14,7 @@ Page({
     numberOptions: [2,3,4,5,6],
     topic: '',
     phone: '',
+    reserveOrSubscribe: '预约',
   },
   onLoad() {
     this.initWeekDates();
@@ -65,6 +66,11 @@ Page({
 
   // 获取数据库中当前日期、会议室下，被预约的时间段
   fetchReservations() {
+    if(this.data.meetingRoomSelected==false){
+      this.resetTimeSlotsSelection();
+      this.updateTimeSlots([]);
+      return;
+    }
     wx.cloud.callFunction({
       name: 'check_reservation',
       data: {
@@ -90,7 +96,7 @@ Page({
         }
         else if(slot.selected) slot.status = 'disabled-selected';
         else slot.status = 'disabled';
-      } 
+      }
       else {
         if(slot.selected) slot.status = 'selected';
         else slot.status = '';
@@ -108,11 +114,20 @@ Page({
       selectedDateIndex: index,
       selectedDate: this.data.weekDates[index].date,
     }, () => {
+      this.resetTimeSlotsSelection();
       this.fetchReservations(); // 重新查询预约信息
     });
   },
   // 选择时间段（高亮/取消高亮）
   onTimeSlotSelect(e) {
+    if(!this.data.meetingRoomSelected){
+      wx.showModal({
+        title: '提示',
+        content: '请选择要预约的会议室',
+        showCancel: false,
+      });
+      return;
+    }
     const { index } = e.currentTarget.dataset;
     const timeSlots = this.data.timeSlots;
     const currentSlot = timeSlots[index];
@@ -131,6 +146,15 @@ Page({
     else if(timeSlots[index].status=='disabled')timeSlots[index].status='disabled-selected';
     else if(timeSlots[index].status=='disabled-selected')timeSlots[index].status='disabled';
     this.setData({ timeSlots });
+    const selectedSlots = this.data.timeSlots
+      .filter((slot) => slot.selected)
+      .map((slot) => slot.time);
+    if(selectedSlots.length==0 || selectedSlots[0].status=='selected'){
+      this.reserveOrSubscribe='预约';
+    }
+    else{
+      this.reserveOrSubscribe='订阅';
+    }
   },
 
   // 选择会议室
@@ -139,7 +163,20 @@ Page({
       selectedMeetingRoom: this.data.meetingRooms[e.detail.value],
       meetingRoomSelected:true,
     }, () => {
+      this.resetTimeSlotsSelection();
       this.fetchReservations(); // 重新查询预约信息
+    });
+  },
+  resetTimeSlotsSelection() {
+    const timeSlots = this.data.timeSlots.map(slot => {
+      slot.selected = false; // 重置为未选中状态
+      if(slot.status=='selected')slot.status='';
+      if(slot.status=='disabled-selected')slot.status='disabled';
+      return slot;
+    });
+    this.setData({ 
+      timeSlots,
+      reserveOrSubscribe: '预约',
     });
   },
   // 会议人数
@@ -187,50 +224,78 @@ Page({
       });
       return;
     }
+    // 预约
+    if(selectedSlots[0].status=='selected'){
+      wx.showModal({
+        title: '预约确认',
+        content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
+        showCancel: true,
 
-    wx.showModal({
-      title: '预约确认',
-      content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
-      showCancel: true,
-
-      success: (res) => {
-        if (res.confirm) {
-          // 发送预约请求
-          wx.cloud.callFunction({
-            name: 'add_reservation',
-            data: {
-              user_id: open_id,
-              selectedSlots: selectedSlots,
-              room_id: this.data.selectedMeetingRoom,
-              date: this.data.selectedDate
-            },
-            success: (res) => {
-              wx.showToast({
-                title: '预约成功',
-                icon: 'success',
-              });
-
-              // 返回并更新 `orders` 页面
-              const pages = getCurrentPages();
-              const prevPage = pages[pages.length - 2]; // 获取上一个页面
-              prevPage.updateOrdersAfterBooking({
-                room_name: this.data.selectedMeetingRoom,
-                date: this.data.selectedDate,
-                period: selectedSlots.join(', '),
-                status: '已预约',
-              });
-              wx.navigateBack();
-            },
-            fail: (err) => {
-              console.error('预约失败', err);
-              wx.showToast({
-                title: '预约失败',
-                icon: 'error',
-              });
-            },
-          });
-        }
-      },
-    });
+        success: (res) => {
+          if (res.confirm) {
+            // 发送预约请求
+            wx.cloud.callFunction({
+              name: 'add_reservation',
+              data: {
+                user_id: open_id,
+                selectedSlots: selectedSlots,
+                room_id: this.data.selectedMeetingRoom,
+                date: this.data.selectedDate
+              },
+              success: (res) => {
+                wx.showToast({
+                  title: '预约成功',
+                  icon: 'success',
+                });
+                // wx.navigateBack();
+              },
+              fail: (err) => {
+                console.error('预约失败', err);
+                wx.showToast({
+                  title: '预约失败',
+                  icon: 'error',
+                });
+              },
+            });
+          }
+        },
+      });
+    }
+    // 订阅
+    else{
+      wx.showModal({
+        title: '订阅确认',
+        content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
+        showCancel: true,
+  
+        success: (res) => {
+          if (res.confirm) {
+            wx.cloud.callFunction({
+              name: 'add_reservation',
+              data: {
+                user_id: open_id,
+                selectedSlots: selectedSlots,
+                room_id: this.data.selectedMeetingRoom,
+                date: this.data.selectedDate
+              },
+              success: (res) => {
+                wx.showToast({
+                  title: '订阅成功',
+                  icon: 'success',
+                });
+                // wx.navigateBack();
+              },
+              fail: (err) => {
+                console.error('订阅失败', err);
+                wx.showToast({
+                  title: '订阅失败',
+                  icon: 'error',
+                });
+              },
+            });
+          }
+        },
+      });
+    }
   },
 });
