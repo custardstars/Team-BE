@@ -1,78 +1,96 @@
-const db = wx.cloud.database();
-
 Page({
   data: {
-    tabs: ['全部', '进行中', '已完成', '订阅'],
-    currentTab: 0, // 当前选中的 Tab
-    orderList: [], // 存储预约记录
+    allOrders: [],          // 全部订单
+    reservedOrders: [],     // 已预约订单
+    completedOrders: [],    // 已完成订单
+    subscribedOrders: [],   // 已订阅订单
+    selectedTab: 'all',     // 当前选中的订单标签
+    currentOrders: [],      // 当前显示的订单列表
   },
 
   onLoad() {
-    // this.fetchOrders(); // 页面加载时默认获取全部记录
+    this.fetchOrders();
   },
 
-  // 切换 Tab
-  changeTab(e) {
-    const index = e.currentTarget.dataset.index;
-    this.setData({ currentTab: index }, () => {
-      this.fetchOrders();
+  // 获取订单列表
+  async fetchOrders() {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+      });
+      return;
+    }
+
+    try {
+      const res = await wx.cloud.database().collection('reservations')
+        .where({ user_id: open_id })
+        .get();
+
+      const allOrders = res.data;
+      const reservedOrders = allOrders.filter(order => order.status === '已预约');
+      const completedOrders = allOrders.filter(order => order.status === '已完成');
+      const subscribedOrders = allOrders.filter(order => order.status === '已订阅');
+
+      this.setData({
+        allOrders,
+        reservedOrders,
+        completedOrders,
+        subscribedOrders,
+        currentOrders: allOrders,  // 默认显示全部订单
+      });
+    } catch (err) {
+      console.error('获取订单失败', err);
+      wx.showToast({
+        title: '获取订单失败',
+        icon: 'error',
+      });
+    }
+  },
+
+  // 更新订单数据（例如在预约之后）
+  updateOrdersAfterBooking(newOrder) {
+    const { reservedOrders, allOrders, selectedTab } = this.data;
+    reservedOrders.push(newOrder);  // 将新预约订单添加到已预约订单列表
+    allOrders.push(newOrder);       // 将新预约订单添加到全部订单列表
+
+    // 确保当前选择的tab更新显示
+    let updatedCurrentOrders = [];
+    if (selectedTab === 'reserved') {
+      updatedCurrentOrders = reservedOrders;
+    } else if (selectedTab === 'all') {
+      updatedCurrentOrders = allOrders;
+    }
+
+    this.setData({
+      reservedOrders,
+      allOrders,
+      currentOrders: updatedCurrentOrders,  // 更新当前显示的订单
     });
   },
-
-  // 获取订单数据
-  fetchOrders() {
-    wx.showLoading({ title: '加载中...' });
-    const { currentTab } = this.data;
-    // 根据当前 Tab 筛选状态
-    let statusCondition = {};
-    switch (currentTab) {
-      case 1: // 进行中
-        statusCondition = { status: '进行中' };
-        break;
-      case 2: // 已完成
-        statusCondition = { status: '已完成' };
-        break;
-      case 3: // 订阅
-        statusCondition = { status: '订阅' };
-        break;
+  
+  // 根据选择的标签切换显示的订单
+  onTabChange(e) {
+    const selectedTab = e.currentTarget.dataset.tab;
+    this.setData({
+      selectedTab,
+      currentOrders: this.getCurrentOrders(selectedTab),
+    });
+  },
+ 
+  getCurrentOrders(selectedTab) {
+    switch (selectedTab) {
+      case 'all':
+        return this.data.allOrders;
+      case 'reserved':
+        return this.data.reservedOrders;
+      case 'completed':
+        return this.data.completedOrders;
+      case 'subscribed':
+        return this.data.subscribedOrders;
       default:
-        statusCondition = {}; // 全部
+        return [];
     }
-    // 查询 records 表，关联 users、rooms、time_slots 表
-    db.collection('records')
-      .where(statusCondition)
-      .orderBy('create_time', 'desc')
-      .get()
-      .then(res => {
-        const records = res.data;
-
-        // 获取关联的用户、会议室、时间段数据
-        const fetchDetailsPromises = records.map(record => {
-          return Promise.all([
-            db.collection('users').where({ user_id: record.user_id }).get(),
-            db.collection('rooms').where({ room_id: record.room_id }).get(),
-            db.collection('time_slots').where({ slot_id: record.slot_id }).get()
-          ]).then(([userRes, roomRes, timeSlotRes]) => {
-            return {
-              ...record,
-              username: userRes.data[0]?.username || '未知用户',
-              room_name: roomRes.data[0]?.room_name || '未知会议室',
-              period: timeSlotRes.data[0]?.period || '',
-              date: timeSlotRes.data[0]?.date || '',
-            };
-          });
-        });
-
-        // 更新数据
-        Promise.all(fetchDetailsPromises).then(orderList => {
-          this.setData({ orderList });
-          wx.hideLoading();
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        wx.showToast({ title: '数据加载失败', icon: 'none' });
-        wx.hideLoading();
-      });
   },
 });

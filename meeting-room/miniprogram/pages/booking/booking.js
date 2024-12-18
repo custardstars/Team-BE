@@ -90,13 +90,6 @@ Page({
     });
   },
 
-  // 选择日期
-  onDateChange(e) {
-    this.setData({
-      selectedDate: e.detail.value,
-    });
-  },
-
   // 自定义开始时间
   onStartTimeInput(e) {
     this.setData({ startTime: e.detail.value });
@@ -106,6 +99,7 @@ Page({
   onEndTimeInput(e) {
     this.setData({ endTime: e.detail.value });
   },
+
   // 确定按钮事件
   onConfirm() {
     const open_id = wx.getStorageSync('open_id');
@@ -117,41 +111,69 @@ Page({
         confirmText: '去登录',
         success: (res) => {
           if (res.confirm) {
-            wx.switchTab({url: '/pages/user-center/index'});
+            wx.switchTab({ url: '/pages/user-center/index' });
           }
-        }
+        },
       });
       return;
     }
+
+    // 获取选中的时间段
     const selectedSlots = this.data.timeSlots
       .filter((slot) => slot.selected)
       .map((slot) => slot.time);
+
+    if (selectedSlots.length === 0) {
+      wx.showToast({
+        title: '请选择时间段',
+        icon: 'none',
+      });
+      return;
+    }
+
+    // 显示确认预约的模态框
     wx.showModal({
       title: '预约确认',
       content: `会议室: ${this.data.selectedMeetingRoom}\n日期: ${this.data.selectedDate}\n时间段: ${selectedSlots.join(', ')}`,
       showCancel: true,
-    })
-    
-    wx.cloud.callFunction({
-      name: 'add_reservation',
-      data: {
-        user_id: open_id,
-        selectedSlots: [100,200,300]
-        // selectedSlots: this.data.selectedSlots
+      success: (res) => {
+        if (res.confirm) {
+          // 发送预约请求
+          wx.cloud.callFunction({
+            name: 'add_reservation',
+            data: {
+              user_id: open_id,
+              selectedDate: this.data.selectedDate,
+              selectedSlots: selectedSlots,
+              selectedMeetingRoom: this.data.selectedMeetingRoom,
+            },
+            success: (res) => {
+              wx.showToast({
+                title: '预约成功',
+                icon: 'success',
+              });
+
+              // 返回并更新 `orders` 页面
+              const pages = getCurrentPages();
+              const prevPage = pages[pages.length - 2]; // 获取上一个页面
+              prevPage.updateOrdersAfterBooking({
+                room_name: this.data.selectedMeetingRoom,
+                date: this.data.selectedDate,
+                period: selectedSlots.join(', '),
+                status: '已预约',
+              });
+              wx.navigateBack();
+            },
+            fail: (err) => {
+              console.error('预约失败', err);
+              wx.showToast({
+                title: '预约失败',
+                icon: 'error',
+              });
+            },
+          });
+        }
       },
-      success: res => {
-        wx.showToast({
-          title: '成功？',
-          icon: 'success'
-        });
-      },
-      fail: err => {
-        console.error('预约失败', err);
-        wx.showToast({
-          title: '预约失败',
-          icon: 'error'
-        });
-      }
     });
   },
 });

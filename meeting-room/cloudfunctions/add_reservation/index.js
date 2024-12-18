@@ -1,17 +1,17 @@
 // 云函数入口文件
-const cloud = require('wx-server-sdk')
+const cloud = require('wx-server-sdk');
 
-cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }) // 使用当前云环境
-
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }); // 使用当前云环境
 
 const db = cloud.database();
+
 exports.main = async (event) => {
-  const { user_id, selectedSlots } = event;
+  const { user_id, selectedDate, selectedSlots, selectedMeetingRoom } = event;
 
   console.log("Received event:", event); // 打印接收到的参数
 
-  if (!user_id || !selectedSlots || selectedSlots.length === 0) {
-    console.error("Invalid parameters:", { user_id, selectedSlots });
+  if (!user_id || !selectedSlots || selectedSlots.length === 0 || !selectedDate || !selectedMeetingRoom) {
+    console.error("Invalid parameters:", { user_id, selectedDate, selectedSlots, selectedMeetingRoom });
     return { success: false, message: '参数错误' };
   }
 
@@ -19,15 +19,18 @@ exports.main = async (event) => {
     const reserveTime = new Date();
     console.log("Starting to add reservations...");
 
-    const tasks = selectedSlots.map(slot_id => {
-      console.log(`Adding slot_id: ${slot_id} for user_id: ${user_id}`);
+    const tasks = selectedSlots.map(slot => {
+      console.log(`Adding slot: ${slot} for user_id: ${user_id}`);
+
       return db.collection('reservations').add({
         data: {
           user_id,
-          slot_id,
-          room_id: 1, // 假设 room_id 为 1
-          reserve_time: reserveTime
-        }
+          room_name: selectedMeetingRoom,
+          date: selectedDate,
+          period: slot,
+          reserve_time: reserveTime,
+          status: '已预约', // 初始状态为已预约
+        },
       });
     });
 

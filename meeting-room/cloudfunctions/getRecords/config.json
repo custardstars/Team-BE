@@ -1,0 +1,7 @@
+{
+  "version": "2.0",
+  "functionRoot": "./",
+  "env": "cloud1-123456",
+  "timeout": 30,
+  "memorySize": 128
+}
