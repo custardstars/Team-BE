@@ -35,8 +35,8 @@
       {
         "pagePath": "pages/orders/orders",
         "text": "我的订单",
-        "iconPath": "images/icons/usercenter.png",
-        "selectedIconPath": "images/icons/usercenter-active.png"
+        "iconPath": "images/icons/business.png",
+        "selectedIconPath": "images/icons/business-active.png"
       },
       {
         "pagePath": "pages/user-center/index",
