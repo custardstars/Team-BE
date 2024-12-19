@@ -73,7 +73,7 @@ Page({
   },
   onLogout() {
     wx.removeStorageSync('userInfo');
-    wx.removeStorage('open_id');
+    wx.removeStorageSync('open_id');
     this.setData({
       username: null,
       avatar: '',

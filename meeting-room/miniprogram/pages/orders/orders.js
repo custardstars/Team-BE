@@ -23,6 +23,14 @@ Page({
   async fetchOrders() {
     const open_id = wx.getStorageSync('open_id');
     if (!open_id) {
+      this.setData({
+        allOrders: [],          // 全部订单
+        reservedOrders: [],     // 已预约订单
+        completedOrders: [],    // 已完成订单
+        subscribedOrders: [],   // 已订阅订单
+        selectedTab: 'all',     // 当前选中的订单标签
+        currentOrders: [],      // 当前显示的订单列表
+      });
       wx.showToast({
         title: '请先登录',
         icon: 'none',

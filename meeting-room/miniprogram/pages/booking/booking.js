@@ -30,7 +30,11 @@ Page({
     this.initTimeSlots();
     this.initRooms();
     console.log('onLoad invoked'); // 日志确认onLoad方法是否被调用
-    
+    const open_id = wx.getStorageSync('open_id');
+    if(!open_id){
+      this.resetTimeSlotsSelection();
+      return;
+    }
     // 接收传递的参数
     const { date, timeSlot, room } = options;
     if(date && room && timeSlot){
@@ -169,6 +173,21 @@ Page({
 
   // 选择日期
   onDateSelect(e) {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id || open_id.length == 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/user-center/index' });
+          }
+        },
+      });
+      return;
+    }
     const { index } = e.currentTarget.dataset;
     this.setData({
       selectedDateIndex: index,
@@ -220,6 +239,21 @@ Page({
 
   // 选择会议室
   onMeetingRoomChange(e) {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id || open_id.length == 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/user-center/index' });
+          }
+        },
+      });
+      return;
+    }
     this.setData({
       selectedMeetingRoom: this.data.meetingRooms[e.detail.value],
       meetingRoomSelected:true,
@@ -243,16 +277,61 @@ Page({
   },
   // 会议人数
   onNumberChange(e) {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id || open_id.length == 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/user-center/index' });
+          }
+        },
+      });
+      return;
+    }
     this.setData({
       number: this.data.numberOptions[e.detail.value],
     });
   },
   // 会议主题
   onTopicInput(e) {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id || open_id.length == 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/user-center/index' });
+          }
+        },
+      });
+      return;
+    }
     this.setData({ topic: e.detail.value });
   },
   // 联系方式
   onPhoneInput(e) {
+    const open_id = wx.getStorageSync('open_id');
+    if (!open_id || open_id.length == 0) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/user-center/index' });
+          }
+        },
+      });
+      return;
+    }
     this.setData({ phone: e.detail.value });
   },
 
