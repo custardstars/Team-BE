@@ -4,8 +4,11 @@ cloud.init();
 const db = cloud.database();
 
 exports.main = async (event, context) => {
-  const currentTime = new Date();
-  console.log('Current Time:', currentTime);
+  // 获取当前时间，并转换为本地时间
+  let currentTime = new Date();
+  currentTime = new Date(currentTime.getTime() + (currentTime.getTimezoneOffset() * 60000) + (8 * 60 * 60 * 1000)); // 调整为中国标准时间（CST）
+
+  console.log('Current Local Time:', currentTime.toString());
 
   try {
     // 查询 reservations 表中的记录
@@ -16,7 +19,7 @@ exports.main = async (event, context) => {
     // 遍历 reservations 表中的记录并进行比对
     for (const reservation of reservations) {
       console.log('Processing Reservation:', reservation);
-      
+
       // 解析 date 和 slot_id
       const [startTime, endTime] = reservation.slot_id.split('--');
       const [month, day] = reservation.date.split('-');
@@ -27,13 +30,15 @@ exports.main = async (event, context) => {
       // 创建 reservation 结束时间
       const reservationEndDateTime = new Date(currentTime.getFullYear(), month - 1, day, endHour, endMinute);
 
-      console.log('Reservation End DateTime:', reservationEndDateTime);
-      console.log('End Hour:', endHour, 'End Minute:', endMinute);
+      // 输出详细的时间信息
+      console.log('Reservation End DateTime:', reservationEndDateTime.toString());
+      console.log('End Hour:', endHour);
+      console.log('End Minute:', endMinute);
 
       // 比较当前时间和 reservation 结束时间
       if (currentTime > reservationEndDateTime) {
         console.log('Current time exceeds reservation end time. Removing reservation and updating record.');
-        
+
         // 当前时间超过预约结束时间，删除该记录
         await db.collection('reservations').doc(reservation._id).remove();
 
