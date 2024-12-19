@@ -179,7 +179,7 @@ Page({
     });
   },
 
-  // 选择时间段（高亮/取消高亮）
+  // 选择时间段
   onTimeSlotSelect(e) {
     // 未选择会议室
     if(!this.data.meetingRoomSelected){
@@ -208,8 +208,7 @@ Page({
     else if(timeSlots[index].status=='disabled')timeSlots[index].status='disabled-selected';
     else if(timeSlots[index].status=='disabled-selected')timeSlots[index].status='disabled';
     this.setData({ timeSlots });
-    const selectedSlots = this.data.timeSlots
-      .filter((slot) => slot.selected)
+    const selectedSlots = this.data.timeSlots.filter((slot) => slot.selected && slot.status !== 'reserved' && slot.status !== 'subscribed')
       .map((slot) => slot.time);
     if(selectedSlots.length==0 || selectedSlots[0].status=='selected'){
       this.reserveOrSubscribe='预约';
@@ -275,7 +274,7 @@ Page({
       });
       return;
     }
-    const selectedSlots = this.data.timeSlots.filter((slot) => slot.selected);
+    const selectedSlots = this.data.timeSlots.filter((slot) => slot.selected && slot.status !== 'reserved' && slot.status !== 'subscribed');
     // 未选择时间
     if (selectedSlots.length == 0) {
       wx.showModal({
@@ -303,8 +302,7 @@ Page({
       });
       return;
     }
-    const time_slots = this.data.timeSlots
-    .filter((slot) => slot.selected)
+    const time_slots = selectedSlots
     .map((slot) => slot.time);
     // 预约
     if(selectedSlots[0].status == 'selected'){

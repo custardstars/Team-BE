@@ -92,7 +92,7 @@ Page({
   },
 
   async cancelOrder(e) {
-    const {status,date,slots,room_id} = e.currentTarget.dataset.order;
+    const {status,date,slots,room_id,phone,number,reserve_time} = e.currentTarget.dataset.order;
     // 输出传入的参数和 currentOrders 数据
     console.log('cancelOrder invoked with data:', e.currentTarget.dataset);
     // 如果订单已取消/完成，则直接返回
@@ -124,7 +124,10 @@ Page({
                 name: 'delete_reservation',
                 data: { user_id, date, room_id, slots },
               });
-              //todo: 调用函数，看是否有用户订阅的成功
+              await wx.cloud.callFunction({
+                name: 'check_orders',
+                data: { user_id, date, room_id, slots ,phone,number,reserve_time},
+              });
             } else if (status === '已订阅') {
               deleteRes = await wx.cloud.callFunction({
                 name: 'delete_subscribe',

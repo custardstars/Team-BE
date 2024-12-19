@@ -54,7 +54,6 @@ exports.main = async (event) => {
       })
       .orderBy('reserve_time', 'asc') // 按 reserve_time 升序排列
       .get();
-
     const waitings = waitingsRes.data;
     console.log('Retrieved waitings:', waitings);
 
