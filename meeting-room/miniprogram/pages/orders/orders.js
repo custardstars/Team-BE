@@ -15,7 +15,7 @@ Page({
     this.fetchOrders();  // 每次页面显示时都刷新数据
   },
   formatReserveTime(date) {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',second: '2-digit' };
     return new Date(date).toLocaleString('zh-CN', options);
   },
 
@@ -124,6 +124,7 @@ Page({
                 name: 'delete_reservation',
                 data: { user_id, date, room_id, slots },
               });
+              //todo: 调用函数，看是否有用户订阅的成功
             } else if (status === '已订阅') {
               deleteRes = await wx.cloud.callFunction({
                 name: 'delete_subscribe',

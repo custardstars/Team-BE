@@ -33,7 +33,7 @@
         <button class="modal-close" bindtap="closeModal">关闭</button>
       </view>
       <view class="modal-body">
-        <text>时间段: {{currentSlot.time}}</text>
+        <text class="TT">时间段: {{currentSlot.time}}</text>
         <view class="rooms-container">
           <view class="free-rooms">
             <text class="section-title">空闲会议室:</text>

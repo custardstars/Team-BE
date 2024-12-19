@@ -150,17 +150,20 @@ button {
   font-weight: bold;
   margin-bottom: 10px;
 }
-
 .room-button {
   width: 90%; /* 调整按钮宽度 */
-  max-width: 100px; /* 设置最大宽度 */
+  max-width: 115px; /* 设置最大宽度 */
+  height: 40px;
   margin: 5px 0; /* 调整间距 */
   padding: 8px; /* 调整按钮内边距 */
+  padding-top: 10px;
+  padding-right: 2px;
+  padding-left: 2px;
   text-align: center;
   background-color: #007aff;
   color: #fff;
   border: none;
   border-radius: 5px;
-  font-size: 12px; /* 调整按钮字体大小 */
+  font-size: 13px; /* 调整按钮字体大小 */
   cursor: pointer;
 }

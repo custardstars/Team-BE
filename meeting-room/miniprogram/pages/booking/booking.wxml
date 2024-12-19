@@ -26,11 +26,23 @@
       </block>
     </view>
   </view>
-
+<!-- 添加帮助图标 -->
+  <view class="help-icon" bindtap="onHelpClick">
+    <image src="../../images/icons/avatar.png" mode="aspectFit" />
+  </view>
+  <!-- 弹窗内容 -->
+  <view wx:if="{{showHelpModal}}" class="modal-overlay">
+    <view class="modal-content">
+      <text class="modal-title">预约帮助\n</text>
+      <text class="modal-text">XXXX\n</text>
+      <text class="modal-text">XXXX\n</text>
+      <button class="modal-btn" bindtap="onCloseHelp">确定</button>
+    </view>
+  </view>
   <!-- 基础预约信息填写 -->
   <view class="form-section">
     <text class="section-title">基础预约信息</text>
-
+    
     <!-- 会议室选择 -->
     <picker mode="selector" range="{{meetingRooms}}" bindchange="onMeetingRoomChange">
       <view class="form-item">

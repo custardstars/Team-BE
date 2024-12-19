@@ -15,8 +15,16 @@ Page({
     topic: '',
     phone: '',
     reserveOrSubscribe: '预约',
+    showHelpModal: false, // 控制弹窗的显示和隐藏
   },
 
+  onHelpClick() {
+    this.setData({showHelpModal: true,});
+  },
+  onCloseHelp() {
+    this.setData({showHelpModal: false,});
+  },
+  
   onLoad(options) {
     this.initWeekDates();
     this.initTimeSlots();
@@ -25,12 +33,12 @@ Page({
     
     // 接收传递的参数
     const { date, timeSlot, room } = options;
-      this.setData({
-      selectedDate: date,
-      selectedTimeSlot: timeSlot,
-      selectedMeetingRoom: room,
-    });
     if(date && room && timeSlot){
+      this.setData({
+        selectedDate: date,
+        selectedTimeSlot: timeSlot,
+        selectedMeetingRoom: room,
+      });
       for(let i=0;i<7;i++){
         if(this.data.weekDates[i].date === date){
           this.setData({selectedDateIndex:i});
