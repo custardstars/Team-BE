@@ -28,7 +28,6 @@
   /* font-weight: bold; */
 }
 
-
 /* 时间段选择 */
 .section-title {
   margin: 10px 0;
@@ -69,7 +68,7 @@
   color: rgb(0, 0, 0);
 }
 .time-item.disabled {
-  background-color: #474747;
+  background-color: #d83b3b;
   color: #fff;
 }
 .time-item.subscribed {
@@ -77,7 +76,7 @@
   color: rgb(49, 49, 49);
 }
 .time-item.disabled-selected {
-  background-color: #d83b3b;
+  background-color: #474747;
   color: #ffffff;
   border: 0.1px solid #2b2b2b;
 }
@@ -85,7 +84,7 @@
 /* 基础预约信息 */
 .form-section {
   margin-right: 20px;
-  margin-top: 20px;
+  margin-top: 10px; /* 减少与顶部的间距 */
   width: 300px;
   height: 280px;
   padding: 0 10px;
@@ -111,28 +110,37 @@
 .confirm-btn {
   width: 80%;
   margin: 20px auto;
-  background-color: #d1d1d1;
-  color: rgb(58, 47, 47);
+  background-color: #53a5e7;
+  color: rgb(253, 250, 250);
   padding: 10px 0;
   border-radius: 8px;
   text-align: center;
   font-size: 16px;
 }
 
-/* 图标样式 */
-.help-icon {
-  position: relative;
-  top: -10px;
-  left: 100px;
-  width: 60px;
-  height: 60px;
+/* 帮助文本和容器样式 */
+.help-container {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  margin-bottom: 0; /* 减少与下面UI的间距 */
+  padding: 10px 0; /* 添加内边距 */
 }
+
+.help-text {
+  font-size: 20px; /* 字体大小 */
+  color: rgb(61, 51, 109); /* 文字颜色 */
+}
+
+
+
 
 .help-icon image {
   width: 100%;
   height: 100%;
 }
 
+/* 弹窗背景遮罩 */
 .mask-layer {
   position: fixed;
   top: 0;
@@ -142,10 +150,11 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
-/* 弹窗样式 */
+
+/* 弹窗内容居中 */
 .modal-overlay {
   position: fixed;
-  top: 20%;
+  top: 25%;
   left: 50%;
   transform: translate(-50%, -20%);
   width: 80%;
@@ -154,33 +163,48 @@
   z-index: 1100;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center; /* 确保内容居中 */
+  box-sizing: border-box; /* 包含 padding 和 border 在内 */
 }
+
+/* 弹窗内的内容 */
 .modal-content {
   background-color: #fff;
-  width: 80%;
-  padding: 20rpx;
-  height: 400px;
-  border-radius: 10rpx;
-  text-align: center;
+  width: 100%; /* 确保宽度为100% */
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center; /* 确保内容居中 */
+  display: flex; /* 使用flex布局 */
+  flex-direction: column;
+  align-items: center; /* 水平居中对齐 */
+  justify-content: flex-start; /* 调整为顶部对齐 */
+  box-sizing: border-box; /* 包含 padding 和 border 在内 */
 }
+
+/* 弹窗标题 */
 .modal-title {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 16px;
-  text-align: center;
+  margin-top: 10px; /* 提升标题位置 */
+  margin-bottom: 10px; /* 减少标题与文本间距 */
+  text-align: center; /* 确保标题居中 */
   color: #333333;
 }
+
+/* 弹窗文本 */
 .modal-text {
   margin: 10px 0;
   line-height: 1.6;
   font-size: 14px;
   color: #666666;
+  text-align: left; /* 确保文本左对齐 */
+  width: 100%; /* 减少宽度 */
+  box-sizing: border-box; /* 包含 padding 和 border 在内 */
 }
+
+/* 弹窗按钮 */
 .modal-btn {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 20px; /* 提升按钮位置 */
   width: 80%;
   background-color: #007aff;
   color: #ffffff;

@@ -1,4 +1,3 @@
-<!--pages/booking/booking.wxml-->
 <view class="container">
   <!-- 顶部日期栏 -->
   <view class="date-nav">
@@ -26,24 +25,29 @@
       </block>
     </view>
   </view>
-<!-- 添加帮助图标 -->
-  <view class="help-icon" bindtap="onHelpClick">
-    <image src="../../images/icons/avatar.png" mode="aspectFit" />
+
+  <!-- 添加帮助图标和文字 -->
+  <view class="help-container">
+    <text bindtap="onHelpClick">❓预约帮助</text>
+    <view class="help-icon" bindtap="onHelpClick">
+    </view>
   </view>
-    <!-- 添加帮助弹窗时的背景遮罩 -->
+  
+  <!-- 添加帮助弹窗时的背景遮罩 -->
   <view class="mask-layer" wx:if="{{showHelpModal}}"></view>
   <!-- 弹窗内容 -->
   <view wx:if="{{showHelpModal}}" class="modal-overlay">
     <view class="modal-content">
       <text class="modal-title">预约帮助</text>
       <view class="modal-text">
-        <text>(1).可以订阅他人预订的会议室，当他人取消预约时会自动帮你进行预约并发送通知\n</text>
-        <text>(2).白色表示空闲的会议室；深灰表示被他人预约的会议室；绿色表示预约成功的会议室；蓝色表示订阅成功的会议室；浅灰表示想要预订的会议室；红色表示想要订阅的会议室\n</text>
-        <text>(3).不能多次预约/订阅同一会议室的同一时间段\n</text>
+        <text>1️⃣\n可以订阅他人预订的会议室，当他人取消预约时会自动帮你进行预约并发送通知\n</text>
+        <text>2️⃣\n白色表示空闲可预约的会议室；\n红色表示被预约可订阅的会议室；\n浅绿色表示预约成功的会议室；\n蓝色表示订阅成功的会议室；\n浅灰表示选中预约的会议室；\n深灰表示选中订阅的会议室\n</text>
+        <text>3️⃣\n不能多次预约/订阅同一会议室的同一时间段\n</text>
       </view>
       <button class="modal-btn" bindtap="onCloseHelp">确定</button>
     </view>
   </view>
+
   <!-- 基础预约信息填写 -->
   <view class="form-section">
     <text class="section-title">基础预约信息</text>
@@ -76,4 +80,3 @@
   <!-- 确定按钮 -->
   <button class="confirm-btn" bindtap="onConfirm">确认{{reserveOrSubscribe}}</button>
 </view>
-
