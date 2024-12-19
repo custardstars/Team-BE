@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/login",
     "pages/home/home",
     "pages/user-center/index",
     "pages/booking/booking",
@@ -44,6 +45,7 @@
         "iconPath": "images/icons/usercenter.png",
         "selectedIconPath": "images/icons/usercenter-active.png"
       }
+
     ]
   }
 }
