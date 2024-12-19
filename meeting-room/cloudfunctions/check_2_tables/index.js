@@ -6,10 +6,8 @@ const db = cloud.database();
 exports.main = async (event, context) => {
   // 获取当前时间，并转换为本地时间
   let currentTime = new Date();
-  currentTime = new Date(currentTime.getTime() + (currentTime.getTimezoneOffset() * 60000) + (8 * 60 * 60 * 1000)); // 调整为中国标准时间（CST）
-
+  currentTime = new Date(currentTime.getTime() + (currentTime.getTimezoneOffset() * 60000) + (8 * 60 * 60 * 1000));
   console.log('Current Local Time:', currentTime.toString());
-
   try {
     // 查询 reservations 表中的记录
     const reservationsRes = await db.collection('reservations').get();

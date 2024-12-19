@@ -6,6 +6,7 @@ Page({
     username: '',
     avatar: '',
     open_id: '',
+
     title: '',
     hasUserInfo: false,
     userInfo: null

@@ -4,6 +4,24 @@ const db = cloud.database();
 
 async function upd_status(room_id, slots, date, user_id, topic, phone, number, reserve_time) {
   try {
+    // 给用户发送订阅消息
+    // const sendMessageRes = await cloud.openapi.subscribeMessage.send({
+    //   touser: user_id, // 用户的 OpenID
+    //   templateId: '0nN4c5gDB5DWOdL0qr3Bo4o7sF7gj1sHL-21rNcOIxs', // 订阅消息模板ID
+    //   page: '/pages/index/index', // 点击消息跳转的页面路径
+    //   data: {
+    //     keyword1: { value: room_id }, // 会议室名称
+    //     keyword2: { value: date }, // 日期
+    //     keyword3: { value: slots.join(', ') }, // 时间段
+    //     keyword4: { value: topic }, // 主题
+    //     keyword5: { value: phone }, // 联系电话
+    //     keyword6: { value: number }, // 预订人数
+    //   },
+    // });
+
+    console.log('消息推送结果:', 111);
+
+    // 更新 records 数据库中的状态为 "已预约"
     const res = await db.collection('records')
       .where({
         room_id: room_id,
@@ -17,7 +35,9 @@ async function upd_status(room_id, slots, date, user_id, topic, phone, number, r
         },
       });
 
-    // 加入 reservations
+    console.log('upd_status updated records:', res);
+
+    // 添加到 reservations 数据库
     const promises = slots.map(slot => {
       return db.collection('reservations').add({
         data: {
@@ -29,29 +49,20 @@ async function upd_status(room_id, slots, date, user_id, topic, phone, number, r
           phone,
           number,
           reserve_time,
-        }
+        },
       });
     });
 
     await Promise.all(promises);
 
-    console.log('upd_status updated records:', res);
-
-    // 发送提示消息
-    await cloud.callFunction({
-      name: 'sendNotification',
-      data: {
-        userId: user_id,
-        message: `你订阅的会议室 ${room_id} 在 ${date} ${slots.join(',')} 已经空出来并自动为你预约。`
-      }
-    });
-
-    return { success: true, message: '状态更新成功' };
+    return { success: true, message: '状态更新成功，并成功发送消息' };
   } catch (error) {
     console.error('upd_status error:', error);
-    return { success: false, message: '状态更新失败', error };
+    return { success: false, message: '状态更新或消息推送失败', error };
   }
 }
+
+exports.upd_status = upd_status;
 
 // 观察者模式
 exports.main = async (event) => {

@@ -6,19 +6,16 @@ const db = cloud.database();
 exports.main = async (event, context) => {
   const { userId, message } = event;
 
-  // 在这里你需要使用一个模板 ID 和用户的订阅消息授权记录
-  const TEMPLATE_ID = 'BE会议室'; // 请替换为你的订阅消息模板 ID
-  const { OPEN_ID } = userId; // 假设 userId 是用户的 openid
+  const TEMPLATE_ID = '0nN4c5gDB5DWOdL0qr3Bo4o7sF7gj1sHL-21rNcOIxs'; // 请替换为你的订阅消息模板 ID
 
   try {
-    // 获取用户 openid
     const userRes = await db.collection('users').doc(userId).get();
     const user = userRes.data;
 
     if (!user) {
       throw new Error('User not found');
     }
-
+    console.log('aaaaaaa',user);
     // 调用微信的订阅消息发送接口
     const result = await cloud.openapi.subscribeMessage.send({
       touser: user.openId,
