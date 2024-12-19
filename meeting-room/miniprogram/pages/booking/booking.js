@@ -25,15 +25,11 @@ Page({
     
     // 接收传递的参数
     const { date, timeSlot, room } = options;
-    console.log('Received parameters:', { date, timeSlot, room }); // 日志输出
-  
-    console.log('Set data0:', this.data); // 日志输出
-    this.setData({
+      this.setData({
       selectedDate: date,
       selectedTimeSlot: timeSlot,
       selectedMeetingRoom: room,
     });
-    console.log('Set data1:', this.data); // 日志输出
     if(date && room && timeSlot){
       for(let i=0;i<7;i++){
         if(this.data.weekDates[i].date === date){
@@ -51,11 +47,8 @@ Page({
         timeSlots,
         meetingRoomSelected: true,
       });
-    }
-    console.log('Set data:', this.data); // 日志输出
-    
-    this.fetchReservations(); // 加载时查询当前日期的预约情况
-    console.log('Initialization complete'); // 日志输出
+    }    
+    this.fetchReservations();
   },
  
   initRooms() {
