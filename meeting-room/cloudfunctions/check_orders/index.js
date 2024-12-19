@@ -2,7 +2,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
-async function upd_status(room_id, slots, date, user_id,topic,phone,number,reserve_time) {
+async function upd_status(room_id, slots, date, user_id, topic, phone, number, reserve_time) {
   try {
     const res = await db.collection('records')
       .where({
@@ -16,22 +16,36 @@ async function upd_status(room_id, slots, date, user_id,topic,phone,number,reser
           status: '已预约', // 更新为已预约状态
         },
       });
-      // 加入 reservations
-      slots.map(slot => {
-        return db.collection('reservations').add({
-          data: {
-            user_id,
-            slot_id: slot,
-            room_id,
-            date,
-            topic,
-            phone,
-            number,
-            reserve_time,
-          }
-        });
+
+    // 加入 reservations
+    const promises = slots.map(slot => {
+      return db.collection('reservations').add({
+        data: {
+          user_id,
+          slot_id: slot,
+          room_id,
+          date,
+          topic,
+          phone,
+          number,
+          reserve_time,
+        }
       });
+    });
+
+    await Promise.all(promises);
+
     console.log('upd_status updated records:', res);
+
+    // 发送提示消息
+    await cloud.callFunction({
+      name: 'sendNotification',
+      data: {
+        userId: user_id,
+        message: `你订阅的会议室 ${room_id} 在 ${date} ${slots.join(',')} 已经空出来并自动为你预约。`
+      }
+    });
+
     return { success: true, message: '状态更新成功' };
   } catch (error) {
     console.error('upd_status error:', error);
@@ -57,10 +71,10 @@ exports.main = async (event) => {
     const waitings = waitingsRes.data;
     console.log('Retrieved waitings:', waitings);
 
-    const found=false;
+    let found = false;
     // 遍历所有等待记录
     for (const waiting of waitings) {
-      const { slots, user_id,topic,phone,number,reserve_time } = waiting;
+      const { slots, user_id, topic, phone, number, reserve_time } = waiting;
       // 检查 slots 中的每一项 slot 是否都不在 reservations 中
       const reservationsCheck = await db.collection('reservations')
         .where({
@@ -78,11 +92,12 @@ exports.main = async (event) => {
           .remove();
         console.log('Deleted waiting record:', deleteWaiting);
         // 调用 upd_status 更新状态
-        await upd_status(room_id, slots, date, user_id,topic,phone,number,reserve_time);
-        found=true;
+        await upd_status(room_id, slots, date, user_id, topic, phone, number, reserve_time);
+        found = true;
+        break; // 找到一个匹配的等待记录并处理后退出循环
       }
     }
-    if(found)return {success:true};
+    if (found) return { success: true };
     return { success: false, message: '没有满足条件的等待记录' };
   } catch (error) {
     console.error('check_order error:', error);
