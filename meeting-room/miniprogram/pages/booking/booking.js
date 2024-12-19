@@ -259,6 +259,7 @@ Page({
 
   // 确定按钮事件
   onConfirm() {
+    if (this.data.showHelpModal) {return;}
     const open_id = wx.getStorageSync('open_id');
     if (!open_id || open_id.length == 0) {
       wx.showModal({

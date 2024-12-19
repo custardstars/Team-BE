@@ -30,12 +30,17 @@
   <view class="help-icon" bindtap="onHelpClick">
     <image src="../../images/icons/avatar.png" mode="aspectFit" />
   </view>
+    <!-- 添加帮助弹窗时的背景遮罩 -->
+  <view class="mask-layer" wx:if="{{showHelpModal}}"></view>
   <!-- 弹窗内容 -->
   <view wx:if="{{showHelpModal}}" class="modal-overlay">
     <view class="modal-content">
-      <text class="modal-title">预约帮助\n</text>
-      <text class="modal-text">XXXX\n</text>
-      <text class="modal-text">XXXX\n</text>
+      <text class="modal-title">预约帮助</text>
+      <view class="modal-text">
+        <text>(1).可以订阅他人预订的会议室，当他人取消预约时会自动帮你进行预约并发送通知\n</text>
+        <text>(2).白色表示空闲的会议室；深灰表示被他人预约的会议室；绿色表示预约成功的会议室；蓝色表示订阅成功的会议室；浅灰表示想要预订的会议室；红色表示想要订阅的会议室\n</text>
+        <text>(3).不能多次预约/订阅同一会议室的同一时间段\n</text>
+      </view>
       <button class="modal-btn" bindtap="onCloseHelp">确定</button>
     </view>
   </view>

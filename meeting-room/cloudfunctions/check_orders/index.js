@@ -58,6 +58,7 @@ exports.main = async (event) => {
     const waitings = waitingsRes.data;
     console.log('Retrieved waitings:', waitings);
 
+    const found=false;
     // 遍历所有等待记录
     for (const waiting of waitings) {
       const { slots, user_id,topic,phone,number,reserve_time } = waiting;
@@ -78,11 +79,11 @@ exports.main = async (event) => {
           .remove();
         console.log('Deleted waiting record:', deleteWaiting);
         // 调用 upd_status 更新状态
-        const updateStatus = await upd_status(room_id, slots, date, user_id,topic,phone,number,reserve_time);
-        return updateStatus; // 返回更新状态的结果
+        await upd_status(room_id, slots, date, user_id,topic,phone,number,reserve_time);
+        found=true;
       }
     }
-    // 如果没有找到符合条件的记录
+    if(found)return {success:true};
     return { success: false, message: '没有满足条件的等待记录' };
   } catch (error) {
     console.error('check_order error:', error);

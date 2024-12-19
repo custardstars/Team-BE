@@ -12,6 +12,8 @@ Page({
     // 检查本地存储
     const user = wx.getStorageSync('userInfo');
     const openid = wx.getStorageSync('open_id');
+    console.log('user',user);
+    console.log('id',openid);
     if (user) {
       this.setData({
         username: user.nickName?user.nickName:'微信用户',
@@ -62,6 +64,7 @@ Page({
         });
       }
     });
+    wx.reLaunch({ url: this.route, });
   },
   gotoWxCodePage() {
     wx.navigateTo({
@@ -77,6 +80,7 @@ Page({
       open_id: ''
     });
     wx.showToast({ title: '已退出登录' });
+    wx.reLaunch({ url: this.route, });
   },
   // 新增方法：跳转到 orders 页面
   goToOrdersPage(e) {
