@@ -24,6 +24,15 @@ exports.main = async (event) => {
         }
       });
     });
+    db.collection('waitings').add({
+      data: {
+        user_id,
+        slots: selectedSlots,
+        room_id,
+        date,
+        reserve_time: reserveTime,
+      }
+    });
     // 执行所有预约任务
     await Promise.all(tasks);
     return { success: true, message: '预约成功' };

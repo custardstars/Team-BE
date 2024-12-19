@@ -18,6 +18,15 @@ async function delete_subscribe(user_id, date, room_id, time_slots) {
         },
       });
     console.log('Updated records status for subscription:', updateRes);
+    // 删除 waitings
+    db.collection('waitings')
+      .where({
+        user_id: user_id,
+        room_id: room_id,
+        date: date,
+        slots: time_slots,
+      })
+      .remove();
     return { success: true, message: '订阅已取消' };
   } catch (error) {
     console.error('delete_subscribe error:', error);
